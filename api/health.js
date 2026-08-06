@@ -1,27 +1,19 @@
-import { browseGame, comparePlayers, searchPublicPresence } from '../lib/roblox.js';
-
-export const config = { maxDuration: 30 };
+import { readFile } from 'node:fs/promises';
+import vm from 'node:vm';
 
 export default async function handler(_req, res) {
+  const files = [
+    ['website', new URL('../public/app.js', import.meta.url)],
+    ['companion', new URL('../companion/popup.js', import.meta.url)],
+  ];
   const results = {};
-  for (const [name, task] of [
-    ['player', () => searchPublicPresence('builderman')],
-    ['game', () => browseGame('1818', { sortOrder: 'Asc', excludeFull: true })],
-    ['compare', () => comparePlayers('builderman', 'Roblox')],
-  ]) {
+  for (const [name, url] of files) {
     try {
-      const value = await task();
-      results[name] = {
-        ok: true,
-        status: value.status || null,
-        user: value.user?.username || null,
-        game: value.game?.name || null,
-        servers: value.servers?.length ?? null,
-        areFriends: value.areFriends ?? null,
-        mutualCount: value.mutualCount ?? null,
-      };
+      const source = await readFile(url, 'utf8');
+      new vm.Script(source, { filename: url.pathname });
+      results[name] = { ok: true, bytes: source.length };
     } catch (error) {
-      results[name] = { ok: false, code: error?.code || 'ERROR', message: error?.message || 'Unknown error' };
+      results[name] = { ok: false, message: error.message };
     }
   }
   res.status(200).json(results);
