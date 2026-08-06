@@ -2,10 +2,17 @@ import http from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import apiHandler from './api/search.js';
+import searchHandler from './api/search.js';
+import gameHandler from './api/game.js';
+import compareHandler from './api/compare.js';
 
 const root = fileURLToPath(new URL('./public', import.meta.url));
 const port = Number(process.env.PORT || 3000);
+const apiRoutes = new Map([
+  ['/api/search', searchHandler],
+  ['/api/game', gameHandler],
+  ['/api/compare', compareHandler],
+]);
 
 const types = {
   '.html': 'text/html; charset=utf-8',
@@ -44,14 +51,17 @@ const server = http.createServer(async (req, res) => {
     res.setHeader('x-content-type-options', 'nosniff');
     res.setHeader('referrer-policy', 'strict-origin-when-cross-origin');
 
-    if (req.url === '/api/search') {
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    const apiHandler = apiRoutes.get(url.pathname);
+    if (apiHandler) {
       decorateResponse(res);
       req.body = req.method === 'POST' ? await readBody(req) : '';
       return apiHandler(req, res);
     }
 
-    const requestPath = new URL(req.url, `http://${req.headers.host}`).pathname;
-    const safePath = normalize(requestPath === '/' ? '/index.html' : requestPath).replace(/^([.][.][/\\])+/, '');
+    const shareRoute = /^\/(player|game|server)\//.test(url.pathname);
+    const requestPath = shareRoute || url.pathname === '/' ? '/index.html' : url.pathname;
+    const safePath = normalize(requestPath).replace(/^([.][.][/\\])+/, '');
     const filePath = join(root, safePath);
 
     if (!filePath.startsWith(root)) {
@@ -83,5 +93,5 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(port, () => {
-  console.log(`RoJoin running at http://localhost:${port}`);
+  console.log(`RoJoiner running at http://localhost:${port}`);
 });
