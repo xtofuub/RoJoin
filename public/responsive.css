@@ -1,0 +1,50 @@
+@media (max-width: 980px) {
+  .nav-links { display: none; }
+  .hero-meta { display: none; }
+  .finder-grid, .privacy-card { grid-template-columns: 1fr; }
+  .why-copy { grid-template-columns: 1fr; }
+  .signal-card { min-height: 500px; }
+  .process-head { align-items: start; flex-direction: column; }
+  .process-grid { grid-template-columns: 1fr; }
+  .process-card { min-height: 280px; }
+  .privacy-card { gap: 50px; padding: 50px; }
+}
+
+@media (max-width: 680px) {
+  .section-shell { width: min(100% - 32px, 1280px); }
+  .top-nav { padding: 18px 16px; }
+  .brand-word, .nav-cta span { display: none; }
+  .nav-cta { padding: 11px 14px; }
+  .hero { min-height: 720px; }
+  .hero-title { font-size: clamp(67px, 24vw, 118px); }
+  .hero-copy { padding: 0 22px; }
+  .scroll-cue { bottom: 28px; }
+  .finder-section { padding-top: 110px; }
+  .section-heading { margin-bottom: 45px; }
+  .finder-panel { min-height: 0; border-radius: 25px; }
+  .panel-topline { padding: 0 16px; }
+  .panel-topline > span:nth-child(2) { display: none; }
+  form { padding: 30px 20px 24px; }
+  .search-row { flex-direction: column; }
+  .search-button { width: 100%; }
+  .search-state { min-height: 300px; margin: 0 20px 28px; }
+  .state-idle { flex-direction: column; text-align: center; }
+  .result-stats { grid-template-columns: 1fr; }
+  .result-actions { flex-direction: column; }
+  .join-button, .secondary-button { width: 100%; }
+  .signal-card { padding: 28px; border-radius: 25px; }
+  .process-section { padding-top: 80px; }
+  .why-card { padding: 42px 24px; border-radius: 26px; }
+  .why-copy { gap: 18px; }
+  .privacy-card { padding: 34px 24px; border-radius: 26px; }
+  .floating-dock { display: none; }
+  footer { padding-top: 90px; }
+  .footer-main { align-items: start; flex-direction: column; }
+  .footer-bottom { margin-top: 80px; gap: 15px; flex-direction: column; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .reveal { opacity: 1; transform: none; }
+}
