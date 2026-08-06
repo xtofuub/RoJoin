@@ -1,25 +1,15 @@
 <div align="center">
-  <img src="./assets/rojoiner-readme.svg" width="100%" alt="RoJoiner — Find the server. Join the game." />
+  <img src="./assets/rojoiner-readme.svg" width="100%" alt="RoJoiner — Roblox joining toolkit" />
 
   <br />
 
-  <a href="https://github.com/xtofuub/RoJoin/blob/main/LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-FF6B50?style=flat-square&labelColor=111111" /></a>
-  <a href="https://github.com/xtofuub/RoJoin"><img alt="Open source" src="https://img.shields.io/badge/source-open-ffffff?style=flat-square&labelColor=111111" /></a>
-  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fxtofuub%2FRoJoin&repository-name=rojoiner"><img alt="Deploy with Vercel" src="https://img.shields.io/badge/deploy-Vercel-ffffff?style=flat-square&logo=vercel&logoColor=white&labelColor=111111" /></a>
+  <a href="./LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-FF6038?style=flat-square&labelColor=111111" /></a>
+  <a href="https://rojoiner-web.vercel.app"><img alt="Live website" src="https://img.shields.io/badge/live-rojoiner-ffffff?style=flat-square&labelColor=111111" /></a>
+  <a href="./companion"><img alt="Optional companion" src="https://img.shields.io/badge/companion-open_source-68C991?style=flat-square&labelColor=111111" /></a>
 
   <p>
-    A transparent, privacy-respecting website for finding and joining a player's<br />
-    <strong>publicly visible Roblox server</strong> using Roblox-owned public endpoints.
-  </p>
-
-  <p>
-    <a href="#-getting-started"><strong>Run locally</strong></a>
-    ·
-    <a href="#-how-it-works"><strong>How it works</strong></a>
-    ·
-    <a href="#-privacy-boundary"><strong>Privacy</strong></a>
-    ·
-    <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fxtofuub%2FRoJoin&repository-name=rojoiner"><strong>Deploy</strong></a>
+    An open-source Roblox joining toolkit for public player lookup, server browsing,<br />
+    relationship checks, local favourites, share links, and optional online-friend access.
   </p>
 </div>
 
@@ -27,140 +17,153 @@
 
 ## Why RoJoiner?
 
-RoJoiner provides a lightweight, open-source way to look up a Roblox player's publicly visible presence and open their exact game instance when Roblox makes it available.
+Roblox joining tools often ask users to install extensions with unclear permissions. RoJoiner keeps the normal website useful without account access, documents every privacy boundary, and provides a small optional companion whose complete source and permissions can be reviewed before installation.
 
-The entire implementation is inspectable and runs without Roblox passwords, `.ROBLOSECURITY` cookies, analytics, a database, or hidden third-party services.
+The website does not request Roblox passwords, `.ROBLOSECURITY` cookies, analytics consent, or a RoJoiner account.
 
-> **Find the server. Join the game.**
+## Toolkit
 
-## Features
+### Players
 
-- **Public presence lookup** — resolve a Roblox username and inspect the presence fields Roblox exposes publicly.
-- **Exact server launch** — open the Roblox desktop player when Roblox returns both a place ID and game instance ID.
-- **Zero credentials** — no Roblox login, session cookie, API key, or OAuth flow.
-- **Server-side requests** — avoids browser CORS workarounds and keeps the client simple.
-- **Clear privacy states** — distinguishes offline, online, in-game-hidden, and joinable results.
-- **Midnight editorial UI** — responsive dark interface with reduced-motion support.
-- **Small attack surface** — dependency-free local runtime and no tracking stack.
+- Resolve a Roblox username and public profile.
+- Display public presence, location, account creation date, avatar, and social counts.
+- Open an exact game instance when Roblox returns a `gameInstanceId`.
+- Fall back to a Roblox-controlled `userId` join request when the exact instance is hidden.
+- Explain which presence and server fields Roblox returned.
+- Save a player locally or create a shareable `/player/<username>` link.
 
-## How it works
+### Servers
+
+- Accept a Roblox game URL or numeric Place ID.
+- Display game metadata, icon, creator, visits, live player count, and server capacity.
+- Browse up to 100 public servers per page.
+- Sort smallest-first or largest-first and optionally hide full servers.
+- Join the smallest open server, largest open server, or a random server.
+- Rejoin a recently opened server.
+- Save games locally and create shareable game or exact-server links.
+
+Public server listings expose instance IDs and capacity information, but Roblox currently leaves player identity arrays empty. RoJoiner therefore does not claim to reveal which hidden player is inside a server.
+
+### Compare
+
+- Compare two Roblox usernames.
+- Show whether the accounts are public friends.
+- Display public friend, follower, and following counts.
+- Calculate and display mutual public friends.
+
+### Local library
+
+Favourite players, favourite games, and recently opened servers are stored in browser `localStorage`. The Library tab includes individual removal controls and a clear-all action. The included app has no remote history database.
+
+### Friends companion
+
+The optional [`companion/`](./companion) extension displays the online friends visible to the Roblox account already signed in within the browser.
+
+- No browser `cookies` permission.
+- No direct `.ROBLOSECURITY` access.
+- Authenticated requests go directly to Roblox domains.
+- No friend data or session data is sent to the RoJoiner website.
+- Chromium and Firefox source-install instructions are included.
+
+See the [companion permission review and installation guide](./companion/README.md).
+
+## Share routes
 
 ```text
-Username
-   │
-   ▼
-Resolve public Roblox user ID
-   │
-   ▼
-Request public presence + avatar
-   │
-   ├── Exact game instance exposed ──► Open Roblox player
-   │
-   └── Instance hidden/offline ──────► Explain the privacy boundary
+/player/<username>
+/game/<placeId>
+/server/<placeId>/<gameInstanceId>
 ```
 
-The backend calls Roblox-owned endpoints for username resolution, profile information, avatar thumbnails, public presence, and optional game metadata.
+The route resolves live data when opened. RoJoiner does not publish a historical record of where players were located.
 
-RoJoiner does **not** enumerate server avatar tokens or attempt to defeat Roblox privacy and join settings. If Roblox omits the game instance ID, the exact-server action remains unavailable.
+## Architecture
 
-## Getting started
+```text
+Browser
+  ├── Players ──────► /api/search  ──► users / presence / friends / thumbnails
+  ├── Servers ──────► /api/game    ──► games / universes / thumbnails
+  ├── Compare ──────► /api/compare ──► users / public friend lists
+  └── Library ──────► localStorage only
 
-### Requirements
+Optional companion
+  └── Browser-managed Roblox session ──► authenticated online-friends endpoint
+```
+
+## Run locally
+
+Requirements:
 
 - Node.js 20 or newer
 - No environment variables
 - No package installation required
 
-### Run locally
-
 ```bash
-git clone https://github.com/xtofuub/RoJoin.git
-cd RoJoin
+git clone https://github.com/xtofuub/RoJoiner.git
+cd RoJoiner
+npm run check
 npm run dev
 ```
 
 Open `http://localhost:3000`.
 
-### Validate the source
-
-```bash
-npm run check
-```
-
-This checks the local server, API handler, Roblox client, and browser JavaScript syntax.
-
 ## Deploy to Vercel
 
-<div align="center">
-  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fxtofuub%2FRoJoin&repository-name=rojoiner">
-    <img src="https://vercel.com/button" alt="Deploy with Vercel" />
-  </a>
-</div>
+Import `xtofuub/RoJoiner` as an **Other** framework project. No build command or environment variables are required.
 
-Use the **Other** framework preset. No build command or environment variables are required.
-
-Vercel serves the interface from `public/` and runs `api/search.js` as a serverless function. Once the GitHub repository is connected in Vercel, every push to `main` creates a new production deployment and other branches receive preview deployments.
-
-## Privacy boundary
-
-| RoJoiner does | RoJoiner does not |
-|---|---|
-| Use Roblox-owned public endpoints | Request your Roblox password |
-| Show only publicly returned presence data | Read `.ROBLOSECURITY` cookies |
-| Open an exact server when Roblox exposes it | Enter private or reserved servers |
-| Return explicit hidden/offline states | Bypass account privacy settings |
-| Apply basic request rate limiting | Store a searchable player-history database |
+Vercel serves the static interface from `public/` and runs the three Node.js functions in `api/`. Pushes to `main` create production deployments through the connected Git integration.
 
 ## Project structure
 
 ```text
 .
 ├── api/
-│   └── search.js              # Rate-limited Vercel serverless endpoint
-├── assets/
-│   └── rojoiner-readme.svg    # README artwork
+│   ├── search.js           # Player lookup endpoint
+│   ├── game.js             # Game metadata and public servers
+│   └── compare.js          # Relationship and mutual-friend checks
+├── companion/
+│   ├── manifest.json       # Optional browser companion
+│   ├── popup.html
+│   ├── popup.css
+│   ├── popup.js
+│   └── README.md
 ├── lib/
-│   └── roblox.js              # Roblox API client and response mapping
+│   └── roblox.js           # Roblox API client and response mapping
 ├── public/
-│   ├── index.html             # Main interface
-│   ├── app.js                 # Search and result rendering
-│   ├── styles.css             # Style entry point
-│   ├── base.css               # Global visual foundation
-│   ├── components.css         # UI components and page sections
-│   ├── responsive.css         # Mobile and reduced-motion behavior
+│   ├── index.html          # Multi-tool interface
+│   ├── app.js              # Tabs, rendering, storage, sharing, launches
+│   ├── styles.css          # Complete responsive visual system
 │   └── favicon.svg
-├── server.mjs                 # Dependency-free local development server
-├── vercel.json                # Routes and security headers
+├── server.mjs              # Dependency-free local runtime
+├── vercel.json             # Functions, share routes, and security headers
 └── package.json
 ```
 
-## API response states
+## Privacy boundary
 
-| State | Meaning |
+| RoJoiner does | RoJoiner does not |
 |---|---|
-| `JOINABLE` | Roblox exposed both the place and exact game instance. |
-| `IN_GAME_HIDDEN` | The player appears in a game, but the exact server is not public. |
-| `ONLINE_NOT_IN_GAME` | The player is online but not currently in a joinable game. |
-| `OFFLINE` | Roblox reports the player as offline. |
+| Use Roblox-owned public endpoints | Ask for a Roblox password |
+| Browse public server instances | Reveal hidden server membership |
+| Use Roblox-native launch links | Enter private or reserved servers without access |
+| Store favourites in the current browser | Upload a searchable player history |
+| Explain hidden and unavailable states | Bypass account privacy or join settings |
+
+Roblox always makes the final decision about whether a player or server can be joined.
 
 ## Security
 
-RoJoiner intentionally avoids account authentication and persistent storage. The included Vercel configuration adds restrictive browser security headers, and the API route applies basic per-instance IP rate limiting.
+- Restrictive Content Security Policy and browser security headers.
+- Per-instance API rate limiting on player lookups.
+- Request timeouts and normalized public errors.
+- No third-party client scripts, analytics SDKs, or external database.
+- Companion permissions are deliberately limited and documented.
 
-Found a security issue? Please avoid posting sensitive exploit details publicly. Open a minimal issue describing the affected component, or contact the maintainer privately through their GitHub profile.
-
-## Contributing
-
-Bug reports and focused pull requests are welcome. Keep changes transparent, dependency-light, and within the project's public-data-only privacy boundary.
-
-1. Fork the repository.
-2. Create a focused branch.
-3. Run `npm run check`.
-4. Submit a pull request explaining the behavior change.
+Please report security issues privately through the maintainer's GitHub profile rather than publishing sensitive exploit details.
 
 ## Disclaimer
 
-RoJoiner is an independent open-source project and is not affiliated with, endorsed by, or sponsored by Roblox Corporation. Roblox may change or rate-limit its public endpoints at any time.
+RoJoiner is an independent open-source project and is not affiliated with, endorsed by, or sponsored by Roblox Corporation. Roblox can change, remove, or rate-limit its endpoints at any time.
 
 ## License
 
