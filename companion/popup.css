@@ -1,0 +1,41 @@
+:root {
+  color-scheme: dark;
+  --bg: #0b0b0b;
+  --surface: #121212;
+  --line: #292825;
+  --text: #f2efe9;
+  --muted: #96928b;
+  --accent: #ff6038;
+  --green: #68c991;
+  font-family: Inter, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+body { width: 380px; min-height: 470px; margin: 0; color: var(--text); background: var(--bg); }
+header { height: 64px; display: flex; align-items: center; gap: 11px; padding: 0 16px; border-bottom: 1px solid var(--line); }
+header strong, header small { display: block; }
+header strong { font-size: 13px; }
+header small { margin-top: 2px; color: var(--muted); font-size: 9px; }
+.mark { position: relative; width: 30px; height: 30px; display: grid; place-items: center; color: #0b0b0b; background: var(--text); font-size: 16px; font-weight: 800; }
+.mark span { position: absolute; right: 4px; top: 4px; width: 4px; height: 4px; background: var(--accent); }
+#refresh { margin-left: auto; border: 0; color: var(--muted); background: transparent; font-size: 18px; cursor: pointer; }
+main { padding: 14px; }
+.status { padding: 18px; border: 1px solid var(--line); color: var(--muted); font-size: 11px; line-height: 1.5; }
+.status.error { border-color: #5e3029; color: #e58b7f; }
+.identity { display: flex; align-items: center; gap: 11px; margin-bottom: 12px; padding: 11px; border: 1px solid var(--line); background: var(--surface); }
+.identity img { width: 44px; height: 44px; object-fit: cover; }
+.identity strong, .identity span { display: block; }
+.identity strong { font-size: 12px; }
+.identity span { margin-top: 3px; color: var(--muted); font-size: 9px; }
+.toolbar { display: flex; align-items: center; justify-content: space-between; margin: 12px 0; }
+.toolbar span { color: var(--green); font-size: 10px; }
+.toolbar input { width: 155px; height: 32px; padding: 0 10px; border: 1px solid var(--line); outline: 0; color: var(--text); background: #0f0f0f; font-size: 10px; }
+.friends { display: grid; gap: 7px; }
+.friend { display: grid; grid-template-columns: 42px 1fr auto; gap: 10px; align-items: center; padding: 9px; border: 1px solid var(--line); background: var(--surface); }
+.friend img { width: 42px; height: 42px; object-fit: cover; }
+.friend strong, .friend span { display: block; max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.friend strong { font-size: 11px; }
+.friend span { margin-top: 3px; color: var(--muted); font-size: 9px; }
+.friend a { min-height: 31px; display: grid; place-items: center; padding: 0 10px; color: #0b0b0b; background: var(--accent); font-size: 9px; font-weight: 700; text-decoration: none; }
+.empty { padding: 35px 10px; color: var(--muted); font-size: 11px; text-align: center; }
+footer { padding: 12px 14px; border-top: 1px solid var(--line); color: #5f5c56; font-size: 9px; text-align: center; }
