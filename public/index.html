@@ -4,9 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0a0a0a" />
-  <meta name="description" content="Find a Roblox player's public game server and open it in Roblox." />
+  <meta name="description" content="Look up a Roblox player's public presence and open Roblox to join them." />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <title>RoJoiner — Public Roblox server finder</title>
+  <title>RoJoiner — Roblox player join tool</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -39,10 +39,10 @@
   <main id="top">
     <section class="hero section-shell">
       <div class="hero-copy reveal">
-        <div class="eyebrow"><span></span> PUBLIC ROBLOX SERVERS</div>
-        <h1>Find the server.<br /><em>Join the game.</em></h1>
+        <div class="eyebrow"><span></span> ROBLOX PLAYER LOOKUP</div>
+        <h1>Find the player.<br /><em>Open Roblox.</em></h1>
         <p>
-          Search a username and, when needed, scan a specific game's public servers. RoJoiner opens the exact game instance when a match is found.
+          Enter a username. When Roblox exposes the exact game instance, RoJoiner opens that server. Otherwise, it asks Roblox to join the player directly.
         </p>
         <div class="hero-actions">
           <a class="primary-link" href="#finder">Search a player</a>
@@ -56,9 +56,9 @@
           <span class="status-dot">LIVE</span>
         </div>
         <dl>
-          <div><dt>Input</dt><dd>Username + optional game</dd></div>
-          <div><dt>Search</dt><dd>Public servers only</dd></div>
-          <div><dt>Output</dt><dd>Exact server launch</dd></div>
+          <div><dt>Input</dt><dd>Roblox username</dd></div>
+          <div><dt>Lookup</dt><dd>Public presence</dd></div>
+          <div><dt>Launch</dt><dd>Exact server or user join</dd></div>
           <div><dt>Credentials</dt><dd>None</dd></div>
         </dl>
         <div class="spec-mark" aria-hidden="true">
@@ -73,34 +73,24 @@
         <div class="section-intro reveal">
           <span class="section-number">01</span>
           <div>
-            <h2>Server finder</h2>
-            <p>Use username-only for public presence, or add a game URL to scan its public servers.</p>
+            <h2>Player finder</h2>
+            <p>RoJoiner resolves the account and uses Roblox-native launch links. Searches are not stored by the included app.</p>
           </div>
         </div>
 
         <div class="finder-panel reveal">
           <form id="search-form" novalidate>
-            <div class="field-grid">
-              <div class="field-group">
-                <label for="username">Roblox username</label>
-                <div class="input-wrap">
-                  <span class="input-at">@</span>
-                  <input id="username" name="username" autocomplete="off" spellcheck="false" maxlength="20" placeholder="builderman" required />
-                  <button class="clear-input" type="button" aria-label="Clear username">×</button>
-                </div>
-              </div>
-
-              <div class="field-group">
-                <label for="place">Game URL or Place ID <span>recommended</span></label>
-                <div class="input-wrap place-wrap">
-                  <span class="input-prefix">#</span>
-                  <input id="place" name="place" autocomplete="off" spellcheck="false" placeholder="https://www.roblox.com/games/…" />
-                </div>
+            <div class="single-field">
+              <label for="username">Roblox username</label>
+              <div class="input-wrap">
+                <span class="input-at">@</span>
+                <input id="username" name="username" autocomplete="off" spellcheck="false" maxlength="20" placeholder="builderman" required />
+                <button class="clear-input" type="button" aria-label="Clear username">×</button>
               </div>
             </div>
 
             <div class="form-footer">
-              <p>Game URL is required when Roblox hides the player's presence.</p>
+              <p>Roblox decides whether the player can be joined based on their current status and privacy settings.</p>
               <button class="search-button" type="submit">
                 <span class="button-label">Find player</span>
                 <span class="button-arrow">→</span>
@@ -114,15 +104,15 @@
               <span class="idle-index">00</span>
               <div>
                 <strong>Ready when you are.</strong>
-                <p>Enter a username and optionally the game they are playing.</p>
+                <p>Enter a Roblox username to begin.</p>
               </div>
             </div>
           </div>
         </div>
 
         <div class="finder-note reveal">
-          <span>PUBLIC DATA ONLY</span>
-          <p>RoJoiner scans public server listings. It cannot enter private or reserved servers and never asks for your Roblox password or session cookie.</p>
+          <span>ROBLOX-CONTROLLED JOIN</span>
+          <p>Exact server IDs appear only when Roblox exposes them. The fallback launch asks Roblox to join the user and does not bypass private servers or account join settings.</p>
         </div>
       </div>
     </section>
@@ -140,17 +130,17 @@
         <article class="process-row reveal">
           <span>01</span>
           <h3>Resolve the account</h3>
-          <p>The username is matched to its canonical Roblox user ID and avatar.</p>
+          <p>The username is matched to its canonical Roblox account and avatar.</p>
         </article>
         <article class="process-row reveal">
           <span>02</span>
-          <h3>Check or scan</h3>
-          <p>RoJoiner first reads public presence, or scans a supplied game's public server pages.</p>
+          <h3>Read public presence</h3>
+          <p>RoJoiner checks the location and game instance fields Roblox returns publicly.</p>
         </article>
         <article class="process-row reveal">
           <span>03</span>
-          <h3>Open Roblox</h3>
-          <p>When a matching public game instance is found, a direct link opens the Roblox player.</p>
+          <h3>Launch Roblox</h3>
+          <p>It opens the exact instance when available, or asks Roblox to join the user directly.</p>
         </article>
       </div>
     </section>
@@ -168,7 +158,7 @@
           <ul>
             <li><span>01</span>No Roblox password</li>
             <li><span>02</span>No <code>.ROBLOSECURITY</code> cookie</li>
-            <li><span>03</span>No private-server access</li>
+            <li><span>03</span>No privacy-setting bypass</li>
           </ul>
           <a class="text-link" href="https://github.com/xtofuub/RoJoiner" target="_blank" rel="noreferrer">Inspect the source on GitHub ↗</a>
         </div>
@@ -180,7 +170,7 @@
     <div class="section-shell footer-inner">
       <div>
         <strong>RoJoiner</strong>
-        <span>Public Roblox server finder</span>
+        <span>Roblox player join tool</span>
       </div>
       <span>Not affiliated with Roblox Corporation.</span>
       <a href="#top">Back to top ↑</a>
@@ -198,13 +188,13 @@
         </div>
       </div>
       <div class="result-stats">
-        <div><span>Location</span><strong class="result-location"></strong></div>
+        <div><span>Public location</span><strong class="result-location"></strong></div>
         <div><span>Place ID</span><strong class="result-place"></strong></div>
         <div><span>Server</span><strong class="result-server"></strong></div>
       </div>
       <div class="result-message"></div>
       <div class="result-actions">
-        <a class="join-button exact-join" href="#"><span>Open exact server</span><b>→</b></a>
+        <a class="join-button exact-join" href="#"><span>Open Roblox</span><b>→</b></a>
         <a class="secondary-button profile-button" target="_blank" rel="noreferrer">View profile</a>
         <a class="secondary-button game-button" target="_blank" rel="noreferrer">Open game page</a>
       </div>
