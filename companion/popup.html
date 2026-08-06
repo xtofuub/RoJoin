@@ -8,17 +8,39 @@
   <script src="popup.js" defer></script>
 </head>
 <body>
-  <header>
-    <div class="mark">R<span></span></div>
-    <div><strong>RoJoiner</strong><small>Friends companion</small></div>
-    <button id="refresh" type="button" title="Refresh">↻</button>
+  <header class="topbar">
+    <div class="brand-mark" aria-hidden="true">R<span></span></div>
+    <div class="brand-copy"><strong>RoJoiner</strong><small>Firefox companion</small></div>
+    <button id="refresh" class="icon-button" type="button" title="Refresh friends" aria-label="Refresh friends">↻</button>
   </header>
+
   <main>
     <div id="status" class="status">Checking your Roblox session…</div>
+
     <section id="identity" class="identity" hidden></section>
-    <div class="toolbar" hidden id="toolbar"><span id="count">0 online</span><input id="filter" placeholder="Filter friends" /></div>
-    <section id="friends" class="friends"></section>
+
+    <section id="workspace" hidden>
+      <div class="summary-row">
+        <div><span id="online-count">0</span><small>online</small></div>
+        <div><span id="joinable-count">0</span><small>in game</small></div>
+        <div class="session-state"><i></i><span>Session local</span></div>
+      </div>
+
+      <div class="controls">
+        <div class="segments" role="tablist" aria-label="Friend filters">
+          <button class="segment active" data-mode="joinable" type="button" role="tab" aria-selected="true">Joinable</button>
+          <button class="segment" data-mode="online" type="button" role="tab" aria-selected="false">All online</button>
+        </div>
+        <input id="filter" type="search" placeholder="Filter friends" autocomplete="off" />
+      </div>
+
+      <section id="friends" class="friends" aria-live="polite"></section>
+    </section>
   </main>
-  <footer>No cookies are read or sent to RoJoiner.</footer>
+
+  <footer>
+    <span>No cookies are read or transmitted.</span>
+    <a href="https://github.com/xtofuub/RoJoiner/tree/main/companion" target="_blank" rel="noreferrer">Source ↗</a>
+  </footer>
 </body>
 </html>
