@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import searchHandler from './api/search.js';
 import gameHandler from './api/game.js';
 import compareHandler from './api/compare.js';
+import networkHandler from './api/network.js';
 
 const root = fileURLToPath(new URL('./public', import.meta.url));
 const port = Number(process.env.PORT || 3000);
@@ -12,6 +13,7 @@ const apiRoutes = new Map([
   ['/api/search', searchHandler],
   ['/api/game', gameHandler],
   ['/api/compare', compareHandler],
+  ['/api/network', networkHandler],
 ]);
 
 const types = {
@@ -22,6 +24,7 @@ const types = {
   '.png': 'image/png',
   '.ico': 'image/x-icon',
   '.json': 'application/json; charset=utf-8',
+  '.zip': 'application/zip',
 };
 
 function decorateResponse(res) {
@@ -84,6 +87,9 @@ const server = http.createServer(async (req, res) => {
 
     res.statusCode = 200;
     res.setHeader('content-type', types[extname(filePath)] || 'application/octet-stream');
+    if (extname(filePath) === '.zip') {
+      res.setHeader('content-disposition', `attachment; filename="${filePath.split(/[\\/]/).at(-1)}"`);
+    }
     res.end(await readFile(filePath));
   } catch (error) {
     console.error(error);
