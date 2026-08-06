@@ -10,12 +10,10 @@
   "rewrites": [
     { "source": "/", "destination": "/public/index.html" },
     { "source": "/styles.css", "destination": "/public/styles.css" },
-    { "source": "/app.js", "destination": "/public/app.js" },
+    { "source": "/app.js", "destination": "/public/app-wrapper.js" },
+    { "source": "/share.js", "destination": "/public/share.js" },
+    { "source": "/core.js", "destination": "/public/app.js" },
     { "source": "/favicon.svg", "destination": "/public/favicon.svg" }
-  ],
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/public/index.html" }
   ],
   "headers": [
     {
