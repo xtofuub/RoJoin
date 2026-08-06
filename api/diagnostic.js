@@ -1,20 +1,18 @@
-import { searchPublicPresence } from '../lib/roblox.js';
-
 export default async function handler(_req, res) {
   try {
-    const result = await searchPublicPresence('builderman', '1818');
-    res.status(200).json({
-      ok: true,
-      status: result.status,
-      source: result.source,
-      scan: result.scan,
-      message: result.privacy.message,
+    const response = await fetch('https://games.roblox.com/v1/games/1818/servers/Public?sortOrder=Asc&excludeFullGames=false&limit=10', {
+      headers: { accept: 'application/json', 'user-agent': 'RoJoiner-Diagnostic/1.0' },
+      cache: 'no-store',
+    });
+    const payload = await response.json();
+    const first = payload?.data?.[0] || {};
+    res.status(response.status).json({
+      ok: response.ok,
+      serverCount: Array.isArray(payload?.data) ? payload.data.length : null,
+      serverFields: Object.keys(first).sort(),
+      arrayFields: Object.fromEntries(Object.entries(first).filter(([, value]) => Array.isArray(value)).map(([key, value]) => [key, value.length])),
     });
   } catch (error) {
-    res.status(error?.status || 500).json({
-      ok: false,
-      code: error?.code || 'INTERNAL_ERROR',
-      message: error?.message || 'Unknown error',
-    });
+    res.status(500).json({ ok: false, message: error?.message || 'Unknown error' });
   }
 }
