@@ -1,0 +1,15 @@
+{
+  "name": "rojoin-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Open-source Roblox public server finder and exact instance launcher.",
+  "scripts": {
+    "dev": "node server.mjs",
+    "start": "node server.mjs",
+    "check": "node --check server.mjs && node --check api/search.js && node --check lib/roblox.js && node --check public/app.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
