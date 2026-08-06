@@ -4,6 +4,9 @@
   "rewrites": [
     { "source": "/", "destination": "/public/index.html" },
     { "source": "/styles.css", "destination": "/public/styles.css" },
+    { "source": "/base.css", "destination": "/public/base.css" },
+    { "source": "/components.css", "destination": "/public/components.css" },
+    { "source": "/responsive.css", "destination": "/public/responsive.css" },
     { "source": "/app.js", "destination": "/public/app.js" },
     { "source": "/favicon.svg", "destination": "/public/favicon.svg" }
   ],
