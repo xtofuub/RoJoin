@@ -13,6 +13,7 @@
     { "source": "/app.js", "destination": "/public/app.js" },
     { "source": "/share.js", "destination": "/public/share.js" },
     { "source": "/core.js", "destination": "/public/core.js" },
+    { "source": "/compare-ui.js", "destination": "/public/compare-ui.js" },
     { "source": "/favicon.svg", "destination": "/public/favicon.svg" }
   ],
   "headers": [
