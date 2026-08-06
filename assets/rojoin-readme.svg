@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title description">
+  <title id="title">RoJoin</title>
+  <description id="description">Find players. Not malware.</description>
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="46%" r="70%">
+      <stop offset="0" stop-color="#261310"/>
+      <stop offset="0.55" stop-color="#0c0807"/>
+      <stop offset="1" stop-color="#050505"/>
+    </radialGradient>
+    <linearGradient id="coral" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#ff806a"/>
+      <stop offset="1" stop-color="#ff5f45"/>
+    </linearGradient>
+    <filter id="blur" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="28"/>
+    </filter>
+    <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse">
+      <path d="M 42 0 L 0 0 0 42" fill="none" stroke="#ffffff" stroke-opacity="0.035" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="420" rx="28" fill="url(#glow)"/>
+  <rect width="1200" height="420" rx="28" fill="url(#grid)"/>
+  <circle cx="600" cy="205" r="122" fill="#ff6b50" opacity="0.12" filter="url(#blur)"/>
+
+  <g opacity="0.9">
+    <circle cx="98" cy="76" r="5" fill="#ff6b50"/>
+    <text x="118" y="82" fill="#8b8b8b" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" letter-spacing="3">OPEN SOURCE / PUBLIC PRESENCE</text>
+  </g>
+
+  <g transform="translate(876 66)">
+    <rect width="226" height="42" rx="21" fill="#111111" stroke="#ffffff" stroke-opacity="0.12"/>
+    <circle cx="25" cy="21" r="5" fill="#55d187"/>
+    <text x="43" y="26" fill="#d9d9d9" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="2">NO EXTENSION NEEDED</text>
+  </g>
+
+  <text x="600" y="218" text-anchor="middle" fill="#f5f5f5" font-family="Arial Black, Arial, Helvetica, sans-serif" font-size="132" font-weight="900" letter-spacing="-9">ROJOIN</text>
+  <rect x="395" y="248" width="410" height="3" rx="1.5" fill="url(#coral)"/>
+  <text x="600" y="294" text-anchor="middle" fill="#9d9d9d" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="600" letter-spacing="5">FIND PLAYERS. NOT MALWARE.</text>
+
+  <g transform="translate(96 348)" fill="none" stroke="#ffffff" stroke-opacity="0.11">
+    <line x1="0" y1="0" x2="1008" y2="0"/>
+  </g>
+  <text x="98" y="385" fill="#666666" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="2">ROBLOX PUBLIC SERVER FINDER</text>
+  <text x="1102" y="385" text-anchor="end" fill="#ff6b50" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="2">TRANSPARENT BY DESIGN</text>
+</svg>
