@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#050505" />
+  <meta name="description" content="Find a Roblox player's publicly visible game server and launch Roblox." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <title>RoJoin — Public server finder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script src="/app.js" type="module"></script>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="cursor-glow" aria-hidden="true"></div>
+
+  <nav class="top-nav" aria-label="Primary navigation">
+    <a class="brand" href="#top" aria-label="RoJoin home">
+      <span class="brand-mark">R.</span>
+      <span class="brand-word">ROJOIN</span>
+    </a>
+    <div class="nav-links">
+      <a href="#finder">Finder</a>
+      <a href="#how">How it works</a>
+      <a href="#why">Why RoJoin</a>
+      <a href="#privacy">Privacy</a>
+    </div>
+    <a class="nav-cta" href="#finder">Find a player <span>↗</span></a>
+  </nav>
+
+  <main id="top">
+    <header class="hero">
+      <div class="hero-radial"></div>
+      <div class="hero-orbit orbit-one"></div>
+      <div class="hero-orbit orbit-two"></div>
+
+      <div class="hero-kicker reveal">
+        <span class="pulse-dot"></span>
+        PUBLIC PRESENCE / LIVE LOOKUP
+      </div>
+
+      <h1 class="hero-title reveal">
+        <span>/FIND</span>
+        <span class="muted">&amp; JOIN.</span>
+      </h1>
+
+      <p class="hero-copy reveal">
+        Search a Roblox username. When Roblox publicly exposes their exact game instance,
+        RoJoin opens it directly in the Roblox player.
+      </p>
+
+      <a href="#finder" class="scroll-cue" aria-label="Scroll to finder">
+        <span>START SEARCH</span>
+        <span class="scroll-arrow">↓</span>
+      </a>
+
+      <div class="hero-meta hero-meta-left">
+        <div class="meta-stack" aria-hidden="true">
+          <span>01</span><span>02</span><span>03</span>
+        </div>
+        <p>No passwords.<br />No Roblox cookies.</p>
+      </div>
+
+      <div class="hero-meta hero-meta-right">
+        <p>Built for public servers.<br /><strong>Privacy stays intact.</strong></p>
+      </div>
+    </header>
+
+    <section id="finder" class="finder-section section-shell">
+      <div class="section-heading reveal">
+        <div class="eyebrow"><span class="pulse-dot"></span> SERVER FINDER</div>
+        <h2>One username.<br /><span>One clean signal.</span></h2>
+      </div>
+
+      <div class="finder-grid">
+        <div class="finder-panel reveal">
+          <div class="panel-topline">
+            <div class="window-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+            <span>PUBLIC PRESENCE QUERY</span>
+            <span class="live-pill"><i></i> READY</span>
+          </div>
+
+          <form id="search-form" novalidate>
+            <label for="username">Roblox username</label>
+            <div class="search-row">
+              <div class="input-wrap">
+                <span class="input-at">@</span>
+                <input id="username" name="username" autocomplete="off" spellcheck="false" maxlength="20" placeholder="builderman" required />
+                <button class="clear-input" type="button" aria-label="Clear username">×</button>
+              </div>
+              <button class="search-button" type="submit">
+                <span class="button-label">Find player</span>
+                <span class="button-arrow">↗</span>
+                <span class="button-loader" aria-hidden="true"></span>
+              </button>
+            </div>
+            <p class="field-note">Uses Roblox-owned, cookie-free endpoints. Searches are not stored by this app.</p>
+          </form>
+
+          <div id="search-state" class="search-state" aria-live="polite">
+            <div class="state-idle">
+              <div class="radar" aria-hidden="true"><span></span><span></span><span></span><i></i></div>
+              <div>
+                <strong>Waiting for a username.</strong>
+                <p>Results appear here without leaving the page.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="signal-card reveal">
+          <span class="card-index">/01</span>
+          <div class="signal-visual" aria-hidden="true">
+            <div class="signal-ring signal-ring-a"></div>
+            <div class="signal-ring signal-ring-b"></div>
+            <div class="signal-core">R</div>
+            <div class="signal-line"></div>
+          </div>
+          <div>
+            <span class="chip">ZERO CREDENTIALS</span>
+            <h3>Public by design.</h3>
+            <p>RoJoin only shows the location fields Roblox sends to an unauthenticated public request.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="how" class="process-section section-shell">
+      <div class="process-head reveal">
+        <div>
+          <div class="eyebrow coral">HOW IT WORKS</div>
+          <h2>Fast enough<br />to feel instant.</h2>
+        </div>
+        <p>Three server-side calls turn a username into a safe, actionable result—without handing the browser access to your Roblox session.</p>
+      </div>
+
+      <div class="process-grid">
+        <article class="process-card reveal">
+          <span class="step-number">01</span>
+          <div class="step-icon">@</div>
+          <h3>Resolve identity</h3>
+          <p>The username is matched to its canonical Roblox user ID and public profile.</p>
+        </article>
+        <article class="process-card reveal">
+          <span class="step-number">02</span>
+          <div class="step-icon">◎</div>
+          <h3>Read presence</h3>
+          <p>RoJoin checks Roblox's public presence response for a place and game instance.</p>
+        </article>
+        <article class="process-card accent-card reveal">
+          <span class="step-number">03</span>
+          <div class="step-icon">↗</div>
+          <h3>Launch Roblox</h3>
+          <p>An exact instance link opens the desktop player when Roblox makes that server public.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="why" class="why-section section-shell">
+      <div class="why-card reveal">
+        <div class="why-tag">WHY ROJOIN / OPEN SOURCE</div>
+        <h2>Find players.<br /><span>Not malware.</span></h2>
+        <div class="why-copy">
+          <p>RoJoin exists because finding a public Roblox server should not require installing a questionable browser extension with broad permissions.</p>
+          <p>It is a transparent, open-source website that runs without Roblox passwords, session cookies, analytics, or hidden third-party services.</p>
+        </div>
+        <a href="https://github.com/xtofuub/RoJoin" target="_blank" rel="noreferrer">Inspect the source <span>↗</span></a>
+      </div>
+    </section>
+
+    <section id="privacy" class="privacy-section section-shell">
+      <div class="privacy-card reveal">
+        <div class="privacy-copy">
+          <div class="eyebrow"><span class="pulse-dot"></span> PRIVACY BOUNDARY</div>
+          <h2>Hidden means<br /><span>hidden.</span></h2>
+          <p>RoJoin does not enumerate avatar tokens, request your <code>.ROBLOSECURITY</code> cookie, access private servers, or override Roblox join settings.</p>
+        </div>
+        <div class="privacy-list">
+          <div><span>01</span><strong>No account login</strong><small>Nothing to authorize or connect.</small></div>
+          <div><span>02</span><strong>No tracking database</strong><small>The included app stores no search history.</small></div>
+          <div><span>03</span><strong>Public results only</strong><small>Exact join appears only when Roblox sends a game ID.</small></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="floating-dock" aria-label="Quick navigation">
+    <a href="#top" title="Top">↑</a>
+    <a href="#finder" title="Finder">⌕</a>
+    <a href="#how" title="How it works">◎</a>
+    <a href="#why" title="Why RoJoin">◆</a>
+    <a href="#privacy" title="Privacy">◇</a>
+    <a class="dock-accent" href="#finder">SEARCH</a>
+  </div>
+
+  <footer>
+    <div class="footer-main section-shell">
+      <h2>GO<br /><span>FIND.</span></h2>
+      <div class="footer-side">
+        <p>Public Roblox presence,<br />presented clearly.</p>
+        <a href="#finder">Run a search ↗</a>
+      </div>
+    </div>
+    <div class="footer-bottom section-shell">
+      <span>© 2026 ROJOIN</span>
+      <span>NOT AFFILIATED WITH ROBLOX CORPORATION</span>
+      <a href="#privacy">PRIVACY</a>
+    </div>
+  </footer>
+
+  <template id="result-template">
+    <article class="result-card">
+      <div class="result-profile">
+        <div class="avatar-shell"><img class="result-avatar" alt="" /><span class="presence-dot"></span></div>
+        <div>
+          <span class="result-status"></span>
+          <h3 class="result-display"></h3>
+          <a class="result-username" target="_blank" rel="noreferrer"></a>
+        </div>
+      </div>
+      <div class="result-stats">
+        <div><span>LOCATION</span><strong class="result-location"></strong></div>
+        <div><span>PLACE ID</span><strong class="result-place"></strong></div>
+        <div><span>SERVER</span><strong class="result-server"></strong></div>
+      </div>
+      <div class="result-message"></div>
+      <div class="result-actions">
+        <a class="join-button exact-join" href="#"><span>Open exact server</span><b>↗</b></a>
+        <a class="secondary-button profile-button" target="_blank" rel="noreferrer">View profile</a>
+        <a class="secondary-button game-button" target="_blank" rel="noreferrer">Open game page</a>
+      </div>
+    </article>
+  </template>
+</body>
+</html>
