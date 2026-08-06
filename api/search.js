@@ -9,16 +9,15 @@ function getClientIp(req) {
   return String(forwarded || req.socket?.remoteAddress || 'unknown').split(',')[0].trim();
 }
 
-function enforceRateLimit(req, hasPlace) {
+function enforceRateLimit(req) {
   const ip = getClientIp(req);
   const now = Date.now();
   const windowMs = 60_000;
-  const limit = hasPlace ? 4 : 10;
-  const key = `${ip}:${hasPlace ? 'scan' : 'presence'}`;
-  const current = buckets.get(key);
+  const limit = 10;
+  const current = buckets.get(ip);
 
   if (!current || now - current.startedAt >= windowMs) {
-    buckets.set(key, { startedAt: now, count: 1 });
+    buckets.set(ip, { startedAt: now, count: 1 });
     return;
   }
 
@@ -42,9 +41,9 @@ export default async function handler(req, res) {
   }
 
   try {
+    enforceRateLimit(req);
     const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
-    enforceRateLimit(req, Boolean(String(body.place || '').trim()));
-    const result = await searchPublicPresence(body.username, body.place);
+    const result = await searchPublicPresence(body.username);
     return send(res, 200, result);
   } catch (error) {
     const status = error instanceof PublicError ? error.status : 500;
