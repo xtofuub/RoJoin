@@ -3,16 +3,16 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "functions": {
-    "api/search.js": {
-      "maxDuration": 30
-    }
+    "api/search.js": { "maxDuration": 20 },
+    "api/game.js": { "maxDuration": 20 },
+    "api/compare.js": { "maxDuration": 20 }
   },
   "rewrites": [
     { "source": "/", "destination": "/public/index.html" },
+    { "source": "/player/:username", "destination": "/public/index.html" },
+    { "source": "/game/:placeId", "destination": "/public/index.html" },
+    { "source": "/server/:placeId/:serverId", "destination": "/public/index.html" },
     { "source": "/styles.css", "destination": "/public/styles.css" },
-    { "source": "/base.css", "destination": "/public/base.css" },
-    { "source": "/components.css", "destination": "/public/components.css" },
-    { "source": "/responsive.css", "destination": "/public/responsive.css" },
     { "source": "/app.js", "destination": "/public/app.js" },
     { "source": "/favicon.svg", "destination": "/public/favicon.svg" }
   ],
