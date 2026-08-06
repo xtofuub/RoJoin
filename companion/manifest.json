@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "RoJoiner Companion",
+  "version": "0.1.0",
+  "description": "Shows the online Roblox friends visible to your signed-in browser and opens Roblox-native join links.",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://users.roblox.com/*",
+    "https://friends.roblox.com/*",
+    "https://presence.roblox.com/*",
+    "https://thumbnails.roblox.com/*"
+  ],
+  "action": {
+    "default_title": "RoJoiner Companion",
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "16": "icon.svg",
+    "32": "icon.svg",
+    "48": "icon.svg",
+    "128": "icon.svg"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "rojoiner-companion@xtofuub",
+      "strict_min_version": "109.0"
+    }
+  }
+}
