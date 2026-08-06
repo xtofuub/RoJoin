@@ -8,13 +8,11 @@
     "api/compare.js": { "maxDuration": 20 }
   },
   "rewrites": [
-    { "source": "/", "destination": "/public/index" },
-    { "source": "/player/:path*", "destination": "/public/index" },
-    { "source": "/game/:path*", "destination": "/public/index" },
-    { "source": "/server/:path*", "destination": "/public/index" },
-    { "source": "/styles.css", "destination": "/public/styles" },
-    { "source": "/app.js", "destination": "/public/app" },
-    { "source": "/favicon.svg", "destination": "/public/favicon.svg" }
+    { "source": "/", "destination": "/public/index.html" },
+    { "source": "/styles.css", "destination": "/public/styles.css" },
+    { "source": "/app.js", "destination": "/public/app.js" },
+    { "source": "/favicon.svg", "destination": "/public/favicon.svg" },
+    { "source": "/(.*)", "destination": "/public/index.html" }
   ],
   "headers": [
     {
