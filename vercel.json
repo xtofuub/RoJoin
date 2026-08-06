@@ -16,6 +16,8 @@
     { "source": "/core.js", "destination": "/public/core.js" },
     { "source": "/compare-ui.js", "destination": "/public/compare-ui.js" },
     { "source": "/network-ui.js", "destination": "/public/network-ui.js" },
+    { "source": "/friends-ui.js", "destination": "/public/friends-ui.js" },
+    { "source": "/downloads/rojoiner-companion-firefox-0.2.0.zip", "destination": "/public/downloads/rojoiner-companion-firefox-0.2.0.zip" },
     { "source": "/favicon.svg", "destination": "/public/favicon.svg" }
   ],
   "headers": [
@@ -26,6 +28,14 @@
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
         { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
         { "key": "Content-Security-Policy", "value": "default-src 'self'; img-src 'self' https://tr.rbxcdn.com https://*.rbxcdn.com data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'" }
+      ]
+    },
+    {
+      "source": "/downloads/rojoiner-companion-firefox-0.2.0.zip",
+      "headers": [
+        { "key": "Content-Type", "value": "application/zip" },
+        { "key": "Content-Disposition", "value": "attachment; filename=\"rojoiner-companion-firefox-0.2.0.zip\"" },
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     }
   ]
