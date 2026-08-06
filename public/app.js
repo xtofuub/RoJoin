@@ -1,10 +1,10 @@
 const form = document.querySelector('#search-form');
 const usernameInput = document.querySelector('#username');
+const placeInput = document.querySelector('#place');
 const searchButton = document.querySelector('.search-button');
 const clearButton = document.querySelector('.clear-input');
 const state = document.querySelector('#search-state');
 const template = document.querySelector('#result-template');
-const cursorGlow = document.querySelector('.cursor-glow');
 
 const escapeText = (value) => String(value ?? '');
 const compactNumber = new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 });
@@ -12,17 +12,17 @@ const compactNumber = new Intl.NumberFormat('en', { notation: 'compact', maximum
 function setLoading(loading) {
   searchButton.disabled = loading;
   usernameInput.disabled = loading;
+  placeInput.disabled = loading;
   searchButton.classList.toggle('loading', loading);
-  searchButton.querySelector('.button-label').textContent = loading ? 'Scanning' : 'Find player';
+  searchButton.querySelector('.button-label').textContent = loading ? 'Searching' : 'Find player';
 }
 
-function renderLoading(username) {
+function renderLoading(username, scansGame) {
   state.innerHTML = `
     <div class="loading-state">
       <div>
-        <div class="radar" aria-hidden="true"><span></span><span></span><span></span><i></i></div>
-        <strong>Looking up @${escapeText(username)}…</strong>
-        <p>Resolving identity, public presence, and game details.</p>
+        <strong>${scansGame ? 'Scanning public servers…' : `Checking @${escapeText(username)}…`}</strong>
+        <p>${scansGame ? 'Comparing public server player thumbnails. Large games can take longer.' : 'Resolving the account and reading the public presence response.'}</p>
       </div>
     </div>`;
 }
@@ -31,22 +31,29 @@ function renderError(message, code = 'SEARCH_FAILED') {
   state.innerHTML = `
     <div class="search-error">
       <span>${escapeText(code).replaceAll('_', ' ')}</span>
-      <h3>Search stopped.</h3>
-      <p>${escapeText(message)}</p>
+      <div>
+        <h3>Search stopped.</h3>
+        <p>${escapeText(message)}</p>
+      </div>
     </div>`;
 }
 
 function locationLabel(data) {
   if (data.game?.name) return data.game.name;
-  if (data.presence?.lastLocation) return data.presence.lastLocation;
+  if (data.status === 'NO_PUBLIC_SERVER') return 'Not exposed';
+  if (data.presence?.lastLocation && data.presence.lastLocation !== 'Website') return data.presence.lastLocation;
   return data.presence?.label || 'Unknown';
 }
 
 function statusLabel(data) {
-  if (data.status === 'JOINABLE') return 'EXACT SERVER FOUND';
-  if (data.status === 'IN_GAME_HIDDEN') return 'IN GAME / SERVER HIDDEN';
-  if (data.status === 'OFFLINE') return 'CURRENTLY OFFLINE';
-  return data.presence?.label?.toUpperCase() || 'PUBLIC STATUS';
+  const labels = {
+    JOINABLE: data.source === 'PUBLIC_SERVER_SCAN' ? 'MATCH FOUND IN PUBLIC SERVER' : 'EXACT SERVER FOUND',
+    IN_GAME_HIDDEN: 'GAME VISIBLE / SERVER HIDDEN',
+    NO_PUBLIC_SERVER: 'NO PUBLIC SERVER EXPOSED',
+    NOT_FOUND_IN_GAME: 'NOT FOUND IN SCANNED SERVERS',
+    SCAN_UNAVAILABLE: 'PUBLIC SCAN UNAVAILABLE',
+  };
+  return labels[data.status] || data.presence?.label?.toUpperCase() || 'PUBLIC STATUS';
 }
 
 function renderResult(data) {
@@ -65,24 +72,32 @@ function renderResult(data) {
   const profile = fragment.querySelector('.profile-button');
   const game = fragment.querySelector('.game-button');
 
-  avatar.src = data.user.avatarUrl || `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#171717"/><text x="50" y="60" text-anchor="middle" fill="#666" font-family="Arial" font-size="42">R</text></svg>`)}`;
+  avatar.src = data.user.avatarUrl || `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#171717"/><text x="50" y="60" text-anchor="middle" fill="#777" font-family="Arial" font-size="42">R</text></svg>`)}`;
   avatar.alt = `${data.user.displayName}'s Roblox avatar`;
+
   dot.classList.toggle('joinable', data.status === 'JOINABLE');
-  dot.classList.toggle('ingame', data.presence.type === 2 && data.status !== 'JOINABLE');
+  dot.classList.toggle('ingame', data.presence?.type === 2 && data.status !== 'JOINABLE');
+
   status.textContent = statusLabel(data);
-  status.style.color = data.status === 'JOINABLE' ? 'var(--green)' : data.status === 'OFFLINE' ? '#737373' : 'var(--coral)';
+  status.style.color = data.status === 'JOINABLE'
+    ? 'var(--green)'
+    : ['IN_GAME_HIDDEN', 'NOT_FOUND_IN_GAME'].includes(data.status)
+      ? 'var(--accent)'
+      : 'var(--muted)';
+
   display.textContent = data.user.displayName;
   username.textContent = `@${data.user.username}`;
   username.href = data.user.profileUrl;
   location.textContent = locationLabel(data);
   if (data.game?.playing != null) location.title = `${compactNumber.format(data.game.playing)} players active`;
-  place.textContent = data.presence.placeId || data.presence.rootPlaceId || 'Hidden';
-  server.textContent = data.presence.gameId ? `${data.presence.gameId.slice(0, 8)}…` : 'Hidden';
-  server.title = data.presence.gameId || 'Roblox did not expose the server ID';
+
+  const placeId = data.presence?.placeId || data.presence?.rootPlaceId || data.scan?.placeId || null;
+  place.textContent = placeId || 'Not exposed';
+  server.textContent = data.presence?.gameId ? `${data.presence.gameId.slice(0, 8)}…` : 'Not exposed';
+  server.title = data.presence?.gameId || 'No exact public server ID was returned';
   message.textContent = data.privacy.message;
   profile.href = data.user.profileUrl;
 
-  const placeId = data.presence.placeId || data.presence.rootPlaceId;
   if (placeId) {
     game.href = `https://www.roblox.com/games/${encodeURIComponent(placeId)}`;
   } else {
@@ -93,15 +108,21 @@ function renderResult(data) {
     exactJoin.href = data.joins.exact.app;
   } else {
     exactJoin.classList.add('disabled');
-    exactJoin.querySelector('span').textContent = data.presence.type === 2 ? 'Exact server hidden' : 'Player not joinable';
+    exactJoin.querySelector('span').textContent = data.status === 'NOT_FOUND_IN_GAME'
+      ? 'Player not found'
+      : data.status === 'SCAN_UNAVAILABLE'
+        ? 'Scan unavailable'
+        : 'Exact server not exposed';
     exactJoin.removeAttribute('href');
   }
 
   state.replaceChildren(card);
 }
 
-async function runSearch(rawUsername) {
+async function runSearch(rawUsername, rawPlace) {
   const username = rawUsername.trim();
+  const place = rawPlace.trim();
+
   if (!username) {
     renderError('Enter a Roblox username first.', 'INVALID_USERNAME');
     usernameInput.focus();
@@ -109,19 +130,23 @@ async function runSearch(rawUsername) {
   }
 
   setLoading(true);
-  renderLoading(username);
+  renderLoading(username, Boolean(place));
 
   try {
     const response = await fetch('/api/search', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ username }),
+      body: JSON.stringify({ username, place }),
     });
     const payload = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(payload?.error?.message || 'The search failed.');
+    if (!response.ok) {
+      const error = new Error(payload?.error?.message || 'The search failed.');
+      error.code = payload?.error?.code || 'LOOKUP_FAILED';
+      throw error;
+    }
     renderResult(payload);
   } catch (error) {
-    renderError(error.message, 'LOOKUP_FAILED');
+    renderError(error.message, error.code || 'LOOKUP_FAILED');
   } finally {
     setLoading(false);
   }
@@ -129,7 +154,7 @@ async function runSearch(rawUsername) {
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
-  runSearch(usernameInput.value);
+  runSearch(usernameInput.value, placeInput.value);
 });
 
 usernameInput.addEventListener('input', () => {
@@ -142,12 +167,6 @@ clearButton.addEventListener('click', () => {
   usernameInput.focus();
 });
 
-document.addEventListener('pointermove', (event) => {
-  if (!cursorGlow) return;
-  cursorGlow.style.left = `${event.clientX}px`;
-  cursorGlow.style.top = `${event.clientY}px`;
-});
-
 const observer = new IntersectionObserver((entries) => {
   for (const entry of entries) {
     if (entry.isIntersecting) {
@@ -155,9 +174,9 @@ const observer = new IntersectionObserver((entries) => {
       observer.unobserve(entry.target);
     }
   }
-}, { threshold: 0.12 });
+}, { threshold: 0.08 });
 
 document.querySelectorAll('.reveal').forEach((element, index) => {
-  element.style.transitionDelay = `${Math.min(index % 4, 3) * 80}ms`;
+  element.style.transitionDelay = `${Math.min(index % 3, 2) * 55}ms`;
   observer.observe(element);
 });
