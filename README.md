@@ -1,11 +1,11 @@
 <div align="center">
-  <img src="./assets/rojoin-readme.svg" width="100%" alt="RoJoin — Find the server. Join the game." />
+  <img src="./assets/rojoiner-readme.svg" width="100%" alt="RoJoiner — Find the server. Join the game." />
 
   <br />
 
   <a href="https://github.com/xtofuub/RoJoin/blob/main/LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-FF6B50?style=flat-square&labelColor=111111" /></a>
   <a href="https://github.com/xtofuub/RoJoin"><img alt="Open source" src="https://img.shields.io/badge/source-open-ffffff?style=flat-square&labelColor=111111" /></a>
-  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fxtofuub%2FRoJoin&repository-name=rojoin"><img alt="Deploy with Vercel" src="https://img.shields.io/badge/deploy-Vercel-ffffff?style=flat-square&logo=vercel&logoColor=white&labelColor=111111" /></a>
+  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fxtofuub%2FRoJoin&repository-name=rojoiner"><img alt="Deploy with Vercel" src="https://img.shields.io/badge/deploy-Vercel-ffffff?style=flat-square&logo=vercel&logoColor=white&labelColor=111111" /></a>
 
   <p>
     A transparent, privacy-respecting website for finding and joining a player's<br />
@@ -19,15 +19,15 @@
     ·
     <a href="#-privacy-boundary"><strong>Privacy</strong></a>
     ·
-    <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fxtofuub%2FRoJoin&repository-name=rojoin"><strong>Deploy</strong></a>
+    <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fxtofuub%2FRoJoin&repository-name=rojoiner"><strong>Deploy</strong></a>
   </p>
 </div>
 
 ---
 
-## Why RoJoin?
+## Why RoJoiner?
 
-RoJoin provides a lightweight, open-source way to look up a Roblox player's publicly visible presence and open their exact game instance when Roblox makes it available.
+RoJoiner provides a lightweight, open-source way to look up a Roblox player's publicly visible presence and open their exact game instance when Roblox makes it available.
 
 The entire implementation is inspectable and runs without Roblox passwords, `.ROBLOSECURITY` cookies, analytics, a database, or hidden third-party services.
 
@@ -61,7 +61,7 @@ Request public presence + avatar
 
 The backend calls Roblox-owned endpoints for username resolution, profile information, avatar thumbnails, public presence, and optional game metadata.
 
-RoJoin does **not** enumerate server avatar tokens or attempt to defeat Roblox privacy and join settings. If Roblox omits the game instance ID, the exact-server action remains unavailable.
+RoJoiner does **not** enumerate server avatar tokens or attempt to defeat Roblox privacy and join settings. If Roblox omits the game instance ID, the exact-server action remains unavailable.
 
 ## Getting started
 
@@ -92,7 +92,7 @@ This checks the local server, API handler, Roblox client, and browser JavaScript
 ## Deploy to Vercel
 
 <div align="center">
-  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fxtofuub%2FRoJoin&repository-name=rojoin">
+  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fxtofuub%2FRoJoin&repository-name=rojoiner">
     <img src="https://vercel.com/button" alt="Deploy with Vercel" />
   </a>
 </div>
@@ -103,7 +103,7 @@ Vercel serves the interface from `public/` and runs `api/search.js` as a serverl
 
 ## Privacy boundary
 
-| RoJoin does | RoJoin does not |
+| RoJoiner does | RoJoiner does not |
 |---|---|
 | Use Roblox-owned public endpoints | Request your Roblox password |
 | Show only publicly returned presence data | Read `.ROBLOSECURITY` cookies |
@@ -116,21 +116,21 @@ Vercel serves the interface from `public/` and runs `api/search.js` as a serverl
 ```text
 .
 ├── api/
-│   └── search.js          # Rate-limited Vercel serverless endpoint
+│   └── search.js              # Rate-limited Vercel serverless endpoint
 ├── assets/
-│   └── rojoin-readme.svg  # README artwork
+│   └── rojoiner-readme.svg    # README artwork
 ├── lib/
-│   └── roblox.js          # Roblox API client and response mapping
+│   └── roblox.js              # Roblox API client and response mapping
 ├── public/
-│   ├── index.html         # Main interface
-│   ├── app.js             # Search and result rendering
-│   ├── styles.css         # Style entry point
-│   ├── base.css           # Global visual foundation
-│   ├── components.css     # UI components and page sections
-│   ├── responsive.css     # Mobile and reduced-motion behavior
+│   ├── index.html             # Main interface
+│   ├── app.js                 # Search and result rendering
+│   ├── styles.css             # Style entry point
+│   ├── base.css               # Global visual foundation
+│   ├── components.css         # UI components and page sections
+│   ├── responsive.css         # Mobile and reduced-motion behavior
 │   └── favicon.svg
-├── server.mjs             # Dependency-free local development server
-├── vercel.json            # Routes and security headers
+├── server.mjs                 # Dependency-free local development server
+├── vercel.json                # Routes and security headers
 └── package.json
 ```
 
@@ -145,7 +145,7 @@ Vercel serves the interface from `public/` and runs `api/search.js` as a serverl
 
 ## Security
 
-RoJoin intentionally avoids account authentication and persistent storage. The included Vercel configuration adds restrictive browser security headers, and the API route applies basic per-instance IP rate limiting.
+RoJoiner intentionally avoids account authentication and persistent storage. The included Vercel configuration adds restrictive browser security headers, and the API route applies basic per-instance IP rate limiting.
 
 Found a security issue? Please avoid posting sensitive exploit details publicly. Open a minimal issue describing the affected component, or contact the maintainer privately through their GitHub profile.
 
@@ -160,7 +160,7 @@ Bug reports and focused pull requests are welcome. Keep changes transparent, dep
 
 ## Disclaimer
 
-RoJoin is an independent open-source project and is not affiliated with, endorsed by, or sponsored by Roblox Corporation. Roblox may change or rate-limit its public endpoints at any time.
+RoJoiner is an independent open-source project and is not affiliated with, endorsed by, or sponsored by Roblox Corporation. Roblox may change or rate-limit its public endpoints at any time.
 
 ## License
 
