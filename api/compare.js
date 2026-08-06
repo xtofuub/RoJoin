@@ -2,6 +2,7 @@ import { comparePlayers, PublicError } from '../lib/roblox.js';
 
 const USERS_ENDPOINT = 'https://users.roblox.com/v1/users';
 const AVATARS_ENDPOINT = 'https://thumbnails.roblox.com/v1/users/avatar-headshot';
+const USERNAME_PATTERN = /^[A-Za-z0-9_]{3,20}$/;
 
 function send(res, status, payload) {
   res.statusCode = status;
@@ -57,12 +58,17 @@ async function fetchAvatars(userIds) {
   }
 }
 
+function validUsername(value) {
+  const username = typeof value === 'string' ? value.trim() : '';
+  return USERNAME_PATTERN.test(username) ? username : null;
+}
+
 async function normalizeMutualFriends(result) {
   const unique = new Map();
 
   for (const friend of result.mutualFriends || []) {
     const id = Number(friend?.id);
-    if (!Number.isFinite(id) || unique.has(id)) continue;
+    if (!Number.isSafeInteger(id) || id <= 0 || unique.has(id)) continue;
     unique.set(id, friend);
   }
 
@@ -73,25 +79,36 @@ async function normalizeMutualFriends(result) {
     fetchAvatars(userIds),
   ]);
 
-  const hydrated = mutualFriends.map((friend) => {
+  const hydrated = mutualFriends.flatMap((friend) => {
     const id = Number(friend.id);
     const profile = profileMap.get(id);
-    const username = profile?.name || friend.username || String(id);
-    const displayName = profile?.displayName || friend.displayName || profile?.name || friend.username || `User ${id}`;
+    const username = validUsername(profile?.name) || validUsername(friend.username);
 
-    return {
+    // Deleted, moderated, and malformed friend records can use placeholder IDs or
+    // omit a usable username. They are not renderable Roblox profiles, so do not
+    // invent a profile card for them.
+    if (!username) return [];
+
+    const displayName = String(
+      profile?.displayName || friend.displayName || profile?.name || username,
+    ).trim() || username;
+
+    return [{
       id,
       username,
       displayName,
       avatarUrl: avatarMap.get(id) || friend.avatarUrl || null,
       profileUrl: `https://www.roblox.com/users/${id}/profile`,
-    };
+    }];
   });
+
+  const rawMutualCount = Number(result.mutualCount || 0);
 
   return {
     ...result,
-    mutualCount: Math.max(Number(result.mutualCount || 0), hydrated.length),
+    mutualCount: hydrated.length,
     mutualShownCount: hydrated.length,
+    unavailableMutualCount: Math.max(0, rawMutualCount - hydrated.length),
     mutualFriends: hydrated,
   };
 }
