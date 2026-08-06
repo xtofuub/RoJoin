@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RoJoiner Companion</title>
+  <link rel="stylesheet" href="popup.css" />
+  <script src="popup.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="mark">R<span></span></div>
+    <div><strong>RoJoiner</strong><small>Friends companion</small></div>
+    <button id="refresh" type="button" title="Refresh">↻</button>
+  </header>
+  <main>
+    <div id="status" class="status">Checking your Roblox session…</div>
+    <section id="identity" class="identity" hidden></section>
+    <div class="toolbar" hidden id="toolbar"><span id="count">0 online</span><input id="filter" placeholder="Filter friends" /></div>
+    <section id="friends" class="friends"></section>
+  </main>
+  <footer>No cookies are read or sent to RoJoiner.</footer>
+</body>
+</html>
