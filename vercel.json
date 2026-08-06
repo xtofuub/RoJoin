@@ -11,8 +11,11 @@
     { "source": "/", "destination": "/public/index.html" },
     { "source": "/styles.css", "destination": "/public/styles.css" },
     { "source": "/app.js", "destination": "/public/app.js" },
-    { "source": "/favicon.svg", "destination": "/public/favicon.svg" },
-    { "source": "/(.*)", "destination": "/public/index.html" }
+    { "source": "/favicon.svg", "destination": "/public/favicon.svg" }
+  ],
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/public/index.html" }
   ],
   "headers": [
     {
