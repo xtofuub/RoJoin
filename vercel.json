@@ -5,7 +5,8 @@
   "functions": {
     "api/search.js": { "maxDuration": 20 },
     "api/game.js": { "maxDuration": 20 },
-    "api/compare.js": { "maxDuration": 20 }
+    "api/compare.js": { "maxDuration": 20 },
+    "api/network.js": { "maxDuration": 20 }
   },
   "rewrites": [
     { "source": "/", "destination": "/public/index.html" },
@@ -14,6 +15,7 @@
     { "source": "/share.js", "destination": "/public/share.js" },
     { "source": "/core.js", "destination": "/public/core.js" },
     { "source": "/compare-ui.js", "destination": "/public/compare-ui.js" },
+    { "source": "/network-ui.js", "destination": "/public/network-ui.js" },
     { "source": "/favicon.svg", "destination": "/public/favicon.svg" }
   ],
   "headers": [
