@@ -1,9 +1,9 @@
 {
   "name": "rojoiner-web",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
   "type": "module",
-  "description": "Open-source Roblox joining toolkit with player lookup, public server browsing, relationship checks, and an optional friends companion.",
+  "description": "Open-source Roblox joining toolkit with player lookup, public server browsing, relationship checks, a public friend-network explorer, and an optional Firefox companion.",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -12,7 +12,7 @@
   "scripts": {
     "dev": "node server.mjs",
     "start": "node server.mjs",
-    "check": "node --check server.mjs && node --check api/search.js && node --check api/game.js && node --check api/compare.js && node --check lib/roblox.js && node --check public/app.js && node --check public/share.js && node --check public/core.js && node --check public/compare-ui.js && node --check companion/popup.js"
+    "check": "node --check server.mjs && node --check api/search.js && node --check api/game.js && node --check api/compare.js && node --check api/network.js && node --check lib/roblox.js && node --check public/app.js && node --check public/share.js && node --check public/core.js && node --check public/compare-ui.js && node --check public/network-ui.js && node --check public/friends-ui.js && node --check companion/popup.js"
   },
   "engines": {
     "node": ">=20"
