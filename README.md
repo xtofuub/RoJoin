@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./assets/rojoin-readme.svg" width="100%" alt="RoJoin — Find players. Not malware." />
+  <img src="./assets/rojoin-readme.svg" width="100%" alt="RoJoin — Find the server. Join the game." />
 
   <br />
 
@@ -9,7 +9,7 @@
 
   <p>
     A transparent, privacy-respecting website for finding and joining a player's<br />
-    <strong>publicly visible Roblox server</strong>—without installing a questionable browser extension.
+    <strong>publicly visible Roblox server</strong> using Roblox-owned public endpoints.
   </p>
 
   <p>
@@ -27,11 +27,11 @@
 
 ## Why RoJoin?
 
-Finding a public Roblox server should not require trusting an extension with broad browser permissions.
+RoJoin provides a lightweight, open-source way to look up a Roblox player's publicly visible presence and open their exact game instance when Roblox makes it available.
 
-RoJoin was built as an inspectable, open-source alternative. It runs without Roblox passwords, `.ROBLOSECURITY` cookies, analytics, a database, or hidden third-party services.
+The entire implementation is inspectable and runs without Roblox passwords, `.ROBLOSECURITY` cookies, analytics, a database, or hidden third-party services.
 
-> **Find players. Not malware.**
+> **Find the server. Join the game.**
 
 ## Features
 
