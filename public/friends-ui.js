@@ -41,19 +41,19 @@ if (friendsPanel) {
         <article class="install-card">
           <div class="friends-card-head"><strong>Install</strong><span>Temporary Firefox add-on</span></div>
           <ol class="install-steps">
-            <li><strong>Download</strong><span>Save the companion ZIP.</span></li>
-            <li><strong>Open debugging</strong><span>Choose Load Temporary Add-on.</span><code>about:debugging#/runtime/this-firefox</code></li>
-            <li><strong>Load it</strong><span>Select the ZIP, stay signed in at Roblox, then pin the extension.</span></li>
+            <li><strong>Download</strong><span class="install-copy">Save the companion ZIP.</span></li>
+            <li><strong>Open debugging</strong><span class="install-copy">Choose <b>Load Temporary Add-on</b>.<code>about:debugging#/runtime/this-firefox</code></span></li>
+            <li><strong>Load it</strong><span class="install-copy">Select the ZIP, stay signed in at Roblox, then pin the extension.</span></li>
           </ol>
         </article>
 
         <article class="boundary-card">
           <div class="friends-card-head"><strong>Limits</strong><span>What it can see</span></div>
           <ul class="boundary-list">
-            <li>Online friends and presence already returned to your Roblox account.</li>
-            <li>Roblox-native <code>userId</code> join attempts; Roblox still decides whether the join is allowed.</li>
-            <li>Malformed or unresolved accounts are omitted.</li>
-            <li class="limit">No hidden users, private servers, cookie extraction, or privacy bypasses.</li>
+            <li><span>Online friends and presence already returned to your Roblox account.</span></li>
+            <li><span>Roblox-native <code>userId</code> join attempts; Roblox still decides whether the join is allowed.</span></li>
+            <li><span>Malformed or unresolved accounts are omitted.</span></li>
+            <li class="limit"><span>No hidden users, private servers, cookie extraction, or privacy bypasses.</span></li>
           </ul>
         </article>
       </div>
