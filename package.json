@@ -12,7 +12,7 @@
   "scripts": {
     "dev": "node server.mjs",
     "start": "node server.mjs",
-    "check": "node --check server.mjs && node --check api/search.js && node --check api/game.js && node --check api/compare.js && node --check api/network.js && node --check lib/roblox.js && node --check public/app.js && node --check public/share.js && node --check public/core.js && node --check public/compare-ui.js && node --check public/network-ui.js && node --check public/friends-ui.js && node --check companion/popup.js"
+    "check": "node --check server.mjs && node --check api/search.js && node --check api/game.js && node --check api/compare.js && node --check api/network.js && node --check lib/roblox.js && node --check public/app.js && node --check public/share.js && node --check public/core.js && node --check public/compare-ui.js && node --check public/network-ui.js && node --check public/friends-ui.js && node --check public/midnight-ui.js && node --check companion/popup.js"
   },
   "engines": {
     "node": ">=20"
