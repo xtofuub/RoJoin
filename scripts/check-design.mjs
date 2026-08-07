@@ -9,8 +9,10 @@ const behaviorModules = [
 
 for (const file of behaviorModules) {
   const source = await readFile(file, 'utf8');
-  const injectsStyles = /createElement\(\s*['"]style['"]\s*\)|\.textContent\s*=\s*`/.test(source);
-  if (injectsStyles) {
+  const createsStyleElement = /createElement\(\s*['"]style['"]\s*\)/i.test(source);
+  const embedsStyleTag = /<style(?:\s|>)/i.test(source);
+
+  if (createsStyleElement || embedsStyleTag) {
     throw new Error(`${file} injects visual styles. Keep feature modules behavior-only and place styles in public/styles.css.`);
   }
 }
