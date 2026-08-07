@@ -1,0 +1,156 @@
+/* Deliberate layout corrections kept separate from the base visual system. */
+
+/* Restore the original RoJoiner hero idea without bringing back the showcase cards. */
+.hero {
+  min-height: calc(100svh - 64px);
+  display: grid;
+  align-content: center;
+  padding: 112px 0 78px;
+}
+
+.hero-center {
+  width: 100%;
+  max-width: none;
+  text-align: center;
+}
+
+.hero-kicker {
+  margin: 0 0 24px;
+  text-align: center;
+}
+
+.hero-title {
+  margin: 0 auto;
+  color: #f4f4f1;
+  font-size: clamp(88px, 14vw, 196px);
+  line-height: .82;
+  letter-spacing: -.078em;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.hero-title span {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.hero-description {
+  max-width: 720px;
+  margin: 36px auto 0;
+  text-align: center;
+}
+
+.hero-actions {
+  justify-content: center;
+}
+
+.hero-meta {
+  width: min(760px, 100%);
+  justify-content: center;
+  margin: 64px auto 0;
+}
+
+/* Firefox panel: keep each text block in one grid cell so inline code never
+   becomes an accidental sibling item. */
+.install-steps li {
+  align-items: start;
+}
+
+.install-steps li > strong {
+  min-width: 0;
+}
+
+.install-copy {
+  grid-column: 3;
+  min-width: 0;
+  color: var(--muted);
+}
+
+.install-copy b {
+  color: #d7d7d2;
+  font-weight: 550;
+}
+
+.install-copy code {
+  display: block !important;
+  position: static !important;
+  width: 100%;
+  margin: 8px 0 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  color: #d9d9d5;
+  background: transparent !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  line-height: 1.45;
+}
+
+.boundary-list li {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr);
+  gap: 11px;
+  align-items: start;
+}
+
+.boundary-list li > span {
+  min-width: 0;
+}
+
+.boundary-list li > span code {
+  display: inline !important;
+  position: static !important;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: #d8d8d3;
+  background: transparent !important;
+  white-space: nowrap !important;
+  line-height: inherit;
+  vertical-align: baseline;
+}
+
+.companion-capabilities div,
+.boundary-list li,
+.install-steps li {
+  overflow: visible;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    min-height: 72svh;
+    padding-top: 96px;
+  }
+
+  .hero-title {
+    font-size: clamp(74px, 16vw, 132px);
+  }
+}
+
+@media (max-width: 620px) {
+  .hero {
+    min-height: 68svh;
+    padding: 76px 0 52px;
+  }
+
+  .hero-title {
+    font-size: clamp(58px, 18vw, 92px);
+    letter-spacing: -.07em;
+  }
+
+  .hero-description {
+    margin-top: 28px;
+  }
+
+  .hero-meta {
+    margin-top: 42px;
+  }
+
+  .install-copy {
+    grid-column: 2;
+  }
+
+  .install-copy code {
+    margin-top: 6px !important;
+  }
+}
