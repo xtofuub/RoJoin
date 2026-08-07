@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "RoJoiner Companion",
-  "version": "0.2.0",
-  "description": "Shows the online Roblox friends visible to your signed-in Firefox session and opens Roblox-native join links.",
+  "version": "0.3.0",
+  "description": "Shows your Roblox friends who are currently in-game and opens Roblox-native or exact-server join links using your signed-in Firefox session.",
   "host_permissions": [
     "https://users.roblox.com/*",
     "https://friends.roblox.com/*",
