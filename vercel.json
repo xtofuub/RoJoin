@@ -17,6 +17,7 @@
     { "source": "/compare-ui.js", "destination": "/public/compare-ui.js" },
     { "source": "/network-ui.js", "destination": "/public/network-ui.js" },
     { "source": "/friends-ui.js", "destination": "/public/friends-ui.js" },
+    { "source": "/midnight-ui.js", "destination": "/public/midnight-ui.js" },
     { "source": "/downloads/rojoiner-companion-firefox-0.2.0.zip", "destination": "/public/downloads/rojoiner-companion-firefox-0.2.0.zip" },
     { "source": "/favicon.svg", "destination": "/public/favicon.svg" }
   ],
