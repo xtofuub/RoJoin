@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#0b0b0b" />
-  <meta name="description" content="Browse Roblox servers, inspect public player presence, compare accounts, and launch Roblox without sharing account credentials." />
+  <meta name="theme-color" content="#050505" />
+  <meta name="description" content="Browse Roblox public servers, inspect public player presence, compare accounts, explore public friend networks, and launch Roblox from one open-source toolkit." />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <title>RoJoiner — Roblox joining toolkit</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css" />
   <script src="/app.js" type="module"></script>
 </head>
@@ -26,35 +26,62 @@
         <a href="#toolkit">Toolkit</a>
         <a href="#privacy">Privacy</a>
         <a href="https://github.com/xtofuub/RoJoiner" target="_blank" rel="noreferrer">Source ↗</a>
+        <a class="nav-cta" href="#toolkit">Open tools</a>
       </nav>
     </div>
   </header>
 
   <main>
-    <section class="hero shell">
-      <div class="hero-main">
-        <p class="eyebrow"><span></span> ROBLOX JOINING TOOLKIT</p>
-        <h1>Find less.<br /><em>Join faster.</em></h1>
-        <p class="hero-lead">Player lookup, public server browsing, relationship checks, local favourites, and an optional open-source friends companion—without giving this website your Roblox account.</p>
-        <a class="primary-action" href="#toolkit">Open toolkit <span>↓</span></a>
+    <section class="hero">
+      <div class="hero-center editorial-reveal">
+        <p class="hero-kicker"><i></i> Roblox public joining toolkit</p>
+        <h1 class="hero-title"><span>/</span>rojoiner</h1>
+        <p class="hero-description"><strong>Browse public servers, compare accounts, explore public friend networks, and join visible friends</strong> from one transparent open-source interface.</p>
       </div>
-      <aside class="hero-index" aria-label="Toolkit contents">
-        <div class="index-head"><span>ROJOINER / 02</span><b>PUBLIC DATA</b></div>
-        <ol>
-          <li><span>01</span>Player lookup</li>
-          <li><span>02</span>Server browser</li>
-          <li><span>03</span>Relationship check</li>
-          <li><span>04</span>Local library</li>
-          <li><span>05</span>Friends companion</li>
-        </ol>
-      </aside>
+      <div class="hero-bottom-left">
+        <div class="hero-product-stack" aria-hidden="true"><span>P</span><span>S</span><span>F</span><span>R</span></div>
+        <p>Public by design.<br />Local where it matters.</p>
+      </div>
+      <div class="hero-bottom-right"><a href="#toolkit">Open toolkit <span>↓</span></a></div>
+    </section>
+
+    <section class="editorial-benefits shell">
+      <div class="benefits-kicker editorial-reveal"><i></i> Why jump through five different Roblox pages?</div>
+      <h2 class="editorial-reveal">A focused toolkit that helps you <span>browse faster</span>, understand public connections, and launch Roblox with less friction.</h2>
+      <div class="benefit-grid">
+        <article class="benefit-card benefit-card-dark editorial-reveal">
+          <span class="benefit-tag">Public server tools</span>
+          <h3>Browse faster.<span>Join sooner.</span></h3>
+        </article>
+        <article class="benefit-card benefit-card-coral editorial-reveal" aria-label="RoJoiner toolkit preview">
+          <div class="editorial-window">
+            <div class="window-top"><i></i><i></i><i></i><span class="window-url"></span></div>
+            <div class="window-body">
+              <div class="window-side"><strong>R.</strong><span></span><span></span><span></span><span></span></div>
+              <div class="window-content">
+                <span>ROJOINER / TOOLKIT</span>
+                <h4>Public tools. Clear limits.</h4>
+                <div class="window-grid">
+                  <div><b>Players</b><small>Presence & joins</small></div>
+                  <div><b>Servers</b><small>Browse & hop</small></div>
+                  <div><b>Network</b><small>Public friends</small></div>
+                  <div><b>Firefox</b><small>Local companion</small></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
     </section>
 
     <section id="toolkit" class="workspace-section">
       <div class="shell">
-        <div class="section-heading">
-          <span>01</span>
-          <div><h2>Toolkit</h2><p>Each tool uses only the data needed for that request. Saved items stay in this browser.</p></div>
+        <div class="section-heading editorial-reveal">
+          <span>01 / TOOLKIT</span>
+          <div>
+            <h2>Pick a tool.</h2>
+            <p>Search public Roblox data, browse live server listings, compare profiles, explore public friend lists, or use the local Firefox companion for your own visible friends.</p>
+          </div>
         </div>
 
         <div class="workspace">
@@ -63,7 +90,7 @@
             <button class="tool-tab" data-tab="servers" role="tab" aria-selected="false">Servers</button>
             <button class="tool-tab" data-tab="compare" role="tab" aria-selected="false">Compare</button>
             <button class="tool-tab" data-tab="library" role="tab" aria-selected="false">Library</button>
-            <button class="tool-tab" data-tab="friends" role="tab" aria-selected="false">Friends</button>
+            <button class="tool-tab" data-tab="friends" role="tab" aria-selected="false">Firefox</button>
           </div>
 
           <section class="tool-panel active" data-panel="players" role="tabpanel">
@@ -78,7 +105,9 @@
                 <button class="submit-button" type="submit"><span>Look up player</span><b>→</b></button>
               </div>
             </form>
-            <div id="player-state" class="tool-state" aria-live="polite"><div class="empty-state"><span>00</span><div><strong>No player selected.</strong><p>Search by username to view public status, social counts, and join diagnostics.</p></div></div></div>
+            <div id="player-state" class="tool-state" aria-live="polite">
+              <div class="empty-state"><span>00</span><div><strong>No player selected.</strong><p>Search by username to view public status, social counts, and join diagnostics.</p></div></div>
+            </div>
           </section>
 
           <section class="tool-panel" data-panel="servers" role="tabpanel" hidden>
@@ -92,7 +121,9 @@
               <label class="check-field"><input id="exclude-full" type="checkbox" checked /><span>Hide full servers</span></label>
               <button class="submit-button" type="submit"><span>Browse servers</span><b>→</b></button>
             </form>
-            <div id="server-state" class="tool-state" aria-live="polite"><div class="empty-state"><span>00</span><div><strong>No game selected.</strong><p>Paste a Roblox game URL or numeric Place ID.</p></div></div></div>
+            <div id="server-state" class="tool-state" aria-live="polite">
+              <div class="empty-state"><span>00</span><div><strong>No game selected.</strong><p>Paste a Roblox game URL or numeric Place ID.</p></div></div>
+            </div>
           </section>
 
           <section class="tool-panel" data-panel="compare" role="tabpanel" hidden>
@@ -105,7 +136,9 @@
               <div class="field-block"><label for="compare-b">Second username</label><div class="input-shell"><span>@</span><input id="compare-b" maxlength="20" placeholder="Roblox" required /></div></div>
               <button class="submit-button" type="submit"><span>Compare</span><b>→</b></button>
             </form>
-            <div id="compare-state" class="tool-state" aria-live="polite"><div class="empty-state"><span>00</span><div><strong>No comparison yet.</strong><p>Enter two different usernames.</p></div></div></div>
+            <div id="compare-state" class="tool-state" aria-live="polite">
+              <div class="empty-state"><span>00</span><div><strong>No comparison yet.</strong><p>Enter two different usernames.</p></div></div>
+            </div>
           </section>
 
           <section class="tool-panel" data-panel="library" role="tabpanel" hidden>
@@ -121,26 +154,7 @@
           </section>
 
           <section class="tool-panel" data-panel="friends" role="tabpanel" hidden>
-            <div class="companion-grid">
-              <div>
-                <span class="panel-code">OPTIONAL / COMPANION</span>
-                <h3>See the friends Roblox shows to your browser.</h3>
-                <p>The website cannot access your logged-in friend visibility. The companion runs locally in your browser, requests only Roblox domains, and never sends your session cookie to RoJoiner.</p>
-                <div class="companion-actions">
-                  <a class="primary-action" href="https://github.com/xtofuub/RoJoiner/tree/main/companion" target="_blank" rel="noreferrer">View companion source ↗</a>
-                  <a class="text-action" href="https://github.com/xtofuub/RoJoiner/blob/main/companion/README.md" target="_blank" rel="noreferrer">Installation guide</a>
-                </div>
-              </div>
-              <div class="permission-card">
-                <div class="permission-head"><span>PERMISSION REVIEW</span><b>LOCAL ONLY</b></div>
-                <dl>
-                  <div><dt>Reads</dt><dd>Your Roblox identity and online friends</dd></div>
-                  <div><dt>Stores</dt><dd>Small local preferences</dd></div>
-                  <div><dt>Sends</dt><dd>Nothing to RoJoiner</dd></div>
-                  <div><dt>Cookie access</dt><dd>Browser-managed requests only</dd></div>
-                </dl>
-              </div>
-            </div>
+            <div class="empty-state"><span>FF</span><div><strong>Loading Firefox companion details.</strong><p>The local companion interface is being prepared.</p></div></div>
           </section>
         </div>
       </div>
@@ -148,8 +162,8 @@
 
     <section id="privacy" class="privacy-section">
       <div class="shell privacy-grid">
-        <div><span class="section-code">02 / BOUNDARY</span><h2>Useful without pretending privacy does not exist.</h2></div>
-        <div class="privacy-copy">
+        <div class="editorial-reveal"><span class="section-code">02 / BOUNDARY</span><h2>Useful without pretending privacy does not exist.</h2></div>
+        <div class="privacy-copy editorial-reveal">
           <p>RoJoiner can browse public game instances, resolve public account information, and create Roblox launch links. It cannot reveal private servers, hidden instance membership, or join permissions Roblox does not grant.</p>
           <ul><li>No Roblox password</li><li>No website-side session cookie</li><li>No remote search-history database</li><li>No privacy-setting bypass</li></ul>
         </div>
@@ -157,7 +171,18 @@
     </section>
   </main>
 
-  <footer><div class="shell footer-inner"><div><strong>RoJoiner</strong><span>Open-source Roblox joining toolkit</span></div><span>Not affiliated with Roblox Corporation.</span><a href="#toolkit">Open toolkit ↑</a></div></footer>
+  <footer class="reference-footer">
+    <div class="shell">
+      <span class="footer-kicker">ROJOINER / OPEN SOURCE</span>
+      <h2 class="footer-display editorial-reveal">JOIN<br /><span>SMARTER.</span></h2>
+      <div class="footer-links editorial-reveal">
+        <a href="#toolkit">Open toolkit</a>
+        <a href="/downloads/rojoiner-companion-firefox-0.2.0.zip" download>Firefox companion ↓</a>
+        <a href="https://github.com/xtofuub/RoJoiner" target="_blank" rel="noreferrer">GitHub ↗</a>
+      </div>
+      <div class="footer-meta"><span>© 2026 RoJoiner</span><span>Not affiliated with Roblox Corporation</span><span>Public data / local companion</span></div>
+    </div>
+  </footer>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </body>
