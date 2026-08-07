@@ -50,7 +50,7 @@ async function api(url, options = {}) {
   return payload;
 }
 
-function batches(values, size = 100) {
+function batches(values, size = 50) {
   const output = [];
   for (let index = 0; index < values.length; index += size) output.push(values.slice(index, index + size));
   return output;
@@ -58,7 +58,7 @@ function batches(values, size = 100) {
 
 async function avatarMap(userIds) {
   const map = new Map();
-  for (const batch of batches([...new Set(userIds.map(validId).filter(Boolean))])) {
+  for (const batch of batches([...new Set(userIds.map(validId).filter(Boolean))], 100)) {
     const url = new URL('https://thumbnails.roblox.com/v1/users/avatar-headshot');
     url.searchParams.set('userIds', batch.join(','));
     url.searchParams.set('size', '150x150');
@@ -73,6 +73,22 @@ async function avatarMap(userIds) {
   return map;
 }
 
+async function presenceMap(userIds) {
+  const map = new Map();
+  for (const batch of batches([...new Set(userIds.map(validId).filter(Boolean))], 50)) {
+    const payload = await api('https://presence.roblox.com/v1/presence/users', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ userIds: batch }),
+    });
+    for (const presence of payload?.userPresences || []) {
+      const id = validId(presence.userId);
+      if (id) map.set(id, presence);
+    }
+  }
+  return map;
+}
+
 function avatarHTML(url, name, className) {
   return `<div class="${className}"><img src="${escapeHTML(url || 'icon.svg')}" alt="" /><span>${escapeHTML(initials(name))}</span></div>`;
 }
@@ -80,13 +96,22 @@ function avatarHTML(url, name, className) {
 function presenceLabel(friend) {
   if (friend.presenceType === 2) return friend.location || 'In game';
   if (friend.presenceType === 3) return 'In Studio';
-  return 'Online';
+  if (friend.presenceType === 1) return 'Online';
+  return 'Offline';
 }
 
 function presenceClass(friend) {
   if (friend.presenceType === 2) return 'in-game';
   if (friend.presenceType === 3) return 'studio';
   return '';
+}
+
+function joinUrl(friend) {
+  if (friend.presenceType !== 2) return null;
+  if (friend.placeId && friend.gameId) {
+    return `roblox://experiences/start?placeId=${encodeURIComponent(friend.placeId)}&gameInstanceId=${encodeURIComponent(friend.gameId)}`;
+  }
+  return `roblox://userId=${encodeURIComponent(friend.id)}`;
 }
 
 function attachAvatarFallbacks(scope) {
@@ -98,15 +123,18 @@ function attachAvatarFallbacks(scope) {
 
 function renderFriends() {
   const query = filterNode.value.trim().toLowerCase();
-  const joinable = friends.filter((friend) => friend.presenceType === 2);
-  const base = mode === 'joinable' ? joinable : friends;
+  const inGame = friends.filter((friend) => friend.presenceType === 2);
+  const base = mode === 'joinable' ? inGame : friends;
   const visible = base.filter((friend) => `${friend.displayName} ${friend.username} ${friend.location}`.toLowerCase().includes(query));
 
   onlineCountNode.textContent = String(friends.length);
-  joinableCountNode.textContent = String(joinable.length);
+  joinableCountNode.textContent = String(inGame.length);
 
   friendsNode.innerHTML = visible.length
-    ? visible.map((friend) => `
+    ? visible.map((friend) => {
+      const join = joinUrl(friend);
+      const exact = Boolean(friend.placeId && friend.gameId);
+      return `
       <article class="friend">
         ${avatarHTML(friend.avatarUrl, friend.displayName, 'friend-avatar')}
         <div class="friend-copy">
@@ -115,11 +143,12 @@ function renderFriends() {
           <small class="${presenceClass(friend)}">${escapeHTML(presenceLabel(friend))}</small>
         </div>
         <div class="friend-actions">
-          ${friend.presenceType === 2 ? `<a class="join" href="roblox://userId=${encodeURIComponent(friend.id)}">Join</a>` : ''}
+          ${join ? `<a class="join" href="${escapeHTML(join)}" title="${exact ? 'Join exact server' : 'Ask Roblox to join this friend'}">Join</a>` : ''}
           <a href="https://www.roblox.com/users/${encodeURIComponent(friend.id)}/profile" target="_blank" rel="noreferrer">Profile</a>
         </div>
-      </article>`).join('')
-    : `<div class="empty">${mode === 'joinable' ? 'None of your visible online friends are currently shown as in-game.' : 'No online friends match this filter.'}</div>`;
+      </article>`;
+    }).join('')
+    : `<div class="empty">${mode === 'joinable' ? 'None of your friends are currently shown as in-game to this Roblox session.' : 'No friends match this filter.'}</div>`;
 
   attachAvatarFallbacks(friendsNode);
 }
@@ -137,7 +166,7 @@ function setMode(nextMode) {
 async function load() {
   statusNode.hidden = false;
   statusNode.classList.remove('error');
-  statusNode.textContent = 'Checking your Roblox session…';
+  statusNode.textContent = 'Loading your Roblox friends…';
   identityNode.hidden = true;
   workspaceNode.hidden = true;
   friendsNode.innerHTML = '';
@@ -146,12 +175,12 @@ async function load() {
 
   try {
     const me = await api('https://users.roblox.com/v1/users/authenticated');
-    const [online, meAvatar] = await Promise.all([
-      api(`https://friends.roblox.com/v1/users/${me.id}/friends/online`),
+    const [friendPayload, meAvatar] = await Promise.all([
+      api(`https://friends.roblox.com/v1/users/${encodeURIComponent(me.id)}/friends`),
       avatarMap([me.id]),
     ]);
 
-    const rawFriends = Array.isArray(online?.data) ? online.data : [];
+    const rawFriends = Array.isArray(friendPayload?.data) ? friendPayload.data : [];
     const deduped = new Map();
     for (const friend of rawFriends) {
       const id = validId(friend.id || friend.userId);
@@ -159,25 +188,20 @@ async function load() {
     }
 
     const ids = [...deduped.keys()];
-    const [avatars, presencePayload] = await Promise.all([
+    const [avatars, presences] = await Promise.all([
       avatarMap(ids),
-      ids.length
-        ? api('https://presence.roblox.com/v1/presence/users', {
-            method: 'POST',
-            headers: { 'content-type': 'application/json' },
-            body: JSON.stringify({ userIds: ids }),
-          })
-        : Promise.resolve({ userPresences: [] }),
+      presenceMap(ids),
     ]);
 
-    const presenceMap = new Map((presencePayload?.userPresences || []).map((presence) => [validId(presence.userId), presence]));
     friends = ids.flatMap((id) => {
       const friend = deduped.get(id);
       const username = String(friend?.name || friend?.username || '').trim();
       if (!username) return [];
-      const presence = presenceMap.get(id);
-      const presenceType = Number(presence?.userPresenceType || 1);
+      const presence = presences.get(id);
+      const presenceType = Number(presence?.userPresenceType || 0);
       const location = presence?.lastLocation && presence.lastLocation !== 'Website' ? presence.lastLocation : '';
+      const placeId = Number(presence?.placeId);
+      const gameId = typeof presence?.gameId === 'string' && presence.gameId ? presence.gameId : null;
       return [{
         id,
         username,
@@ -185,10 +209,14 @@ async function load() {
         avatarUrl: avatars.get(id) || null,
         location,
         presenceType,
+        placeId: Number.isSafeInteger(placeId) && placeId > 0 ? placeId : null,
+        gameId,
       }];
     }).sort((a, b) => {
       if (a.presenceType === 2 && b.presenceType !== 2) return -1;
       if (a.presenceType !== 2 && b.presenceType === 2) return 1;
+      if (a.presenceType > b.presenceType) return -1;
+      if (a.presenceType < b.presenceType) return 1;
       return a.displayName.localeCompare(b.displayName, undefined, { sensitivity: 'base' });
     });
 
@@ -205,7 +233,7 @@ async function load() {
   } catch (error) {
     friends = [];
     statusNode.classList.add('error');
-    statusNode.innerHTML = `Could not use your Roblox session. Sign in at <strong>roblox.com</strong>, then reopen the companion.<br /><br />${escapeHTML(error.message)}`;
+    statusNode.innerHTML = `Could not load your Roblox friends. Sign in at <strong>roblox.com</strong>, then reopen the companion.<br /><br />${escapeHTML(error.message)}`;
   } finally {
     refreshButton.classList.remove('loading');
     refreshButton.disabled = false;
