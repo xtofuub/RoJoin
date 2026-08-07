@@ -11,7 +11,7 @@
   "rewrites": [
     { "source": "/", "destination": "/public/index.html" },
     { "source": "/styles.css", "destination": "/public/styles.css" },
-    { "source": "/friends-polish.css", "destination": "/public/friends-polish.css" },
+    { "source": "/human.css", "destination": "/public/human.css" },
     { "source": "/app.js", "destination": "/public/app.js" },
     { "source": "/share.js", "destination": "/public/share.js" },
     { "source": "/core.js", "destination": "/public/core.js" },
