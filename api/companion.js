@@ -96,7 +96,7 @@ export default async function handler(req, res) {
     const archive = zipStore(entries);
     res.statusCode = 200;
     res.setHeader('content-type', 'application/zip');
-    res.setHeader('content-disposition', 'attachment; filename="rojoiner-companion-firefox-0.3.0.zip"');
+    res.setHeader('content-disposition', 'attachment; filename="rojoiner-companion-firefox-0.3.1.zip"');
     res.setHeader('cache-control', 'no-store, max-age=0');
     res.setHeader('content-length', String(archive.length));
     return res.end(archive);
