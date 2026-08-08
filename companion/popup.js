@@ -73,6 +73,22 @@ async function avatarMap(userIds) {
   return map;
 }
 
+async function hydrateProfiles(userIds) {
+  const map = new Map();
+  for (const batch of batches([...new Set(userIds.map(validId).filter(Boolean))], 100)) {
+    const payload = await api('https://users.roblox.com/v1/users', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ userIds: batch, excludeBannedUsers: false }),
+    });
+    for (const user of payload?.data || []) {
+      const id = validId(user.id);
+      if (id) map.set(id, user);
+    }
+  }
+  return map;
+}
+
 async function presenceMap(userIds) {
   const map = new Map();
   for (const batch of batches([...new Set(userIds.map(validId).filter(Boolean))], 50)) {
@@ -87,6 +103,216 @@ async function presenceMap(userIds) {
     }
   }
   return map;
+}
+
+async function fetchFriendIds(userId) {
+  const ids = [];
+  const seen = new Set();
+  let cursor = null;
+
+  for (let page = 0; page < 24; page += 1) {
+    const url = new URL(`https://friends.roblox.com/v1/users/${encodeURIComponent(userId)}/friends/find`);
+    url.searchParams.set('limit', '50');
+    url.searchParams.set('userSort', 'FriendScore');
+    if (cursor) url.searchParams.set('cursor', cursor);
+
+    const payload = await api(url);
+    const items = payload?.PageItems || payload?.pageItems || [];
+    for (const item of items) {
+      const id = validId(item?.id || item?.userId);
+      if (id && !seen.has(id)) {
+        seen.add(id);
+        ids.push(id);
+      }
+    }
+
+    cursor = payload?.NextCursor || payload?.nextCursor || null;
+    if (!cursor) break;
+  }
+
+  if (ids.length) return ids;
+
+  const legacy = await api(`https://friends.roblox.com/v1/users/${encodeURIComponent(userId)}/friends`);
+  for (const item of legacy?.data || []) {
+    const id = validId(item?.id || item?.userId);
+    if (id && !seen.has(id)) {
+      seen.add(id);
+      ids.push(id);
+    }
+  }
+  return ids;
+}
+
+async function loadDirectSnapshot() {
+  const me = await api('https://users.roblox.com/v1/users/authenticated');
+  const [friendIds, meAvatar, countPayload] = await Promise.all([
+    fetchFriendIds(me.id),
+    avatarMap([me.id]),
+    api(`https://friends.roblox.com/v1/users/${encodeURIComponent(me.id)}/friends/count`).catch(() => null),
+  ]);
+
+  const expectedCount = Number(countPayload?.count || 0);
+  if (!friendIds.length && expectedCount > 0) {
+    throw new Error(`Roblox reports ${expectedCount} friends, but the friend pages were empty.`);
+  }
+
+  const [profiles, avatars, presences] = await Promise.all([
+    hydrateProfiles(friendIds),
+    avatarMap(friendIds),
+    presenceMap(friendIds),
+  ]);
+
+  return buildSnapshot(me, meAvatar.get(Number(me.id)) || null, friendIds, profiles, avatars, presences);
+}
+
+function buildSnapshot(me, myAvatarUrl, friendIds, profiles, avatars, presences) {
+  const rows = friendIds.flatMap((id) => {
+    const profile = profiles.get(id);
+    if (!profile) return [];
+    const username = String(profile.name || profile.username || '').trim();
+    if (!username) return [];
+    const presence = presences.get(id);
+    const presenceType = Number(presence?.userPresenceType || 0);
+    const location = presence?.lastLocation && presence.lastLocation !== 'Website' ? presence.lastLocation : '';
+    const placeId = Number(presence?.placeId);
+    const gameId = typeof presence?.gameId === 'string' && presence.gameId ? presence.gameId : null;
+    return [{
+      id,
+      username,
+      displayName: String(profile.displayName || username).trim() || username,
+      avatarUrl: avatars.get(id) || null,
+      location,
+      presenceType,
+      placeId: Number.isSafeInteger(placeId) && placeId > 0 ? placeId : null,
+      gameId,
+    }];
+  });
+
+  rows.sort((a, b) => {
+    if (a.presenceType === 2 && b.presenceType !== 2) return -1;
+    if (a.presenceType !== 2 && b.presenceType === 2) return 1;
+    if (a.presenceType > b.presenceType) return -1;
+    if (a.presenceType < b.presenceType) return 1;
+    return a.displayName.localeCompare(b.displayName, undefined, { sensitivity: 'base' });
+  });
+
+  return {
+    me: {
+      id: Number(me.id),
+      username: String(me.name || ''),
+      displayName: String(me.displayName || me.name || ''),
+      avatarUrl: myAvatarUrl,
+    },
+    friends: rows,
+  };
+}
+
+async function loadViaRobloxTab() {
+  if (!browser?.tabs || !browser?.scripting) throw new Error('Roblox-tab bridge is unavailable.');
+
+  const tabs = await browser.tabs.query({ url: ['https://www.roblox.com/*', 'https://roblox.com/*'] });
+  const tab = tabs.find((item) => item.active) || tabs[0];
+  if (!tab?.id) throw new Error('Open roblox.com in a tab, stay signed in, then press refresh.');
+
+  const results = await browser.scripting.executeScript({
+    target: { tabId: tab.id },
+    world: 'MAIN',
+    func: async () => {
+      const request = async (url, options = {}) => {
+        const response = await fetch(url, {
+          ...options,
+          credentials: 'include',
+          headers: { accept: 'application/json', ...(options.headers || {}) },
+          cache: 'no-store',
+        });
+        const payload = await response.json().catch(() => null);
+        if (!response.ok) throw new Error(payload?.errors?.[0]?.message || `Roblox request failed (${response.status}).`);
+        return payload;
+      };
+      const safeId = (value) => {
+        const id = Number(value);
+        return Number.isSafeInteger(id) && id > 0 ? id : null;
+      };
+      const batch = (values, size) => {
+        const out = [];
+        for (let i = 0; i < values.length; i += size) out.push(values.slice(i, i + size));
+        return out;
+      };
+
+      const me = await request('https://users.roblox.com/v1/users/authenticated');
+      const ids = [];
+      const seen = new Set();
+      let cursor = null;
+      for (let page = 0; page < 24; page += 1) {
+        const url = new URL(`https://friends.roblox.com/v1/users/${encodeURIComponent(me.id)}/friends/find`);
+        url.searchParams.set('limit', '50');
+        url.searchParams.set('userSort', 'FriendScore');
+        if (cursor) url.searchParams.set('cursor', cursor);
+        const payload = await request(url.toString());
+        const items = payload?.PageItems || payload?.pageItems || [];
+        for (const item of items) {
+          const id = safeId(item?.id || item?.userId);
+          if (id && !seen.has(id)) { seen.add(id); ids.push(id); }
+        }
+        cursor = payload?.NextCursor || payload?.nextCursor || null;
+        if (!cursor) break;
+      }
+
+      if (!ids.length) {
+        const legacy = await request(`https://friends.roblox.com/v1/users/${encodeURIComponent(me.id)}/friends`);
+        for (const item of legacy?.data || []) {
+          const id = safeId(item?.id || item?.userId);
+          if (id && !seen.has(id)) { seen.add(id); ids.push(id); }
+        }
+      }
+
+      const countPayload = await request(`https://friends.roblox.com/v1/users/${encodeURIComponent(me.id)}/friends/count`).catch(() => null);
+      const expectedCount = Number(countPayload?.count || 0);
+      if (!ids.length && expectedCount > 0) throw new Error(`Roblox reports ${expectedCount} friends, but returned no friend IDs.`);
+
+      const profiles = [];
+      for (const group of batch(ids, 100)) {
+        const payload = await request('https://users.roblox.com/v1/users', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ userIds: group, excludeBannedUsers: false }),
+        });
+        profiles.push(...(payload?.data || []));
+      }
+
+      const presences = [];
+      for (const group of batch(ids, 50)) {
+        const payload = await request('https://presence.roblox.com/v1/presence/users', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ userIds: group }),
+        });
+        presences.push(...(payload?.userPresences || []));
+      }
+
+      const avatarIds = [Number(me.id), ...ids];
+      const avatars = [];
+      for (const group of batch(avatarIds, 100)) {
+        const url = new URL('https://thumbnails.roblox.com/v1/users/avatar-headshot');
+        url.searchParams.set('userIds', group.join(','));
+        url.searchParams.set('size', '150x150');
+        url.searchParams.set('format', 'Png');
+        url.searchParams.set('isCircular', 'false');
+        const payload = await request(url.toString());
+        avatars.push(...(payload?.data || []));
+      }
+
+      return { me, ids, profiles, presences, avatars };
+    },
+  });
+
+  const raw = results?.[0]?.result;
+  if (!raw?.me) throw new Error('The Roblox tab did not return session data.');
+
+  const profiles = new Map((raw.profiles || []).map((item) => [validId(item.id), item]).filter(([id]) => id));
+  const presences = new Map((raw.presences || []).map((item) => [validId(item.userId), item]).filter(([id]) => id));
+  const avatars = new Map((raw.avatars || []).map((item) => [validId(item.targetId), item.imageUrl || null]).filter(([id]) => id));
+  return buildSnapshot(raw.me, avatars.get(validId(raw.me.id)) || null, raw.ids || [], profiles, avatars, presences);
 }
 
 function avatarHTML(url, name, className) {
@@ -174,56 +400,19 @@ async function load() {
   refreshButton.disabled = true;
 
   try {
-    const me = await api('https://users.roblox.com/v1/users/authenticated');
-    const [friendPayload, meAvatar] = await Promise.all([
-      api(`https://friends.roblox.com/v1/users/${encodeURIComponent(me.id)}/friends`),
-      avatarMap([me.id]),
-    ]);
-
-    const rawFriends = Array.isArray(friendPayload?.data) ? friendPayload.data : [];
-    const deduped = new Map();
-    for (const friend of rawFriends) {
-      const id = validId(friend.id || friend.userId);
-      if (id && !deduped.has(id)) deduped.set(id, friend);
+    let snapshot;
+    try {
+      snapshot = await loadViaRobloxTab();
+    } catch (bridgeError) {
+      console.warn('RoJoiner Roblox-tab bridge failed; using extension requests.', bridgeError);
+      snapshot = await loadDirectSnapshot();
     }
 
-    const ids = [...deduped.keys()];
-    const [avatars, presences] = await Promise.all([
-      avatarMap(ids),
-      presenceMap(ids),
-    ]);
-
-    friends = ids.flatMap((id) => {
-      const friend = deduped.get(id);
-      const username = String(friend?.name || friend?.username || '').trim();
-      if (!username) return [];
-      const presence = presences.get(id);
-      const presenceType = Number(presence?.userPresenceType || 0);
-      const location = presence?.lastLocation && presence.lastLocation !== 'Website' ? presence.lastLocation : '';
-      const placeId = Number(presence?.placeId);
-      const gameId = typeof presence?.gameId === 'string' && presence.gameId ? presence.gameId : null;
-      return [{
-        id,
-        username,
-        displayName: String(friend.displayName || username).trim() || username,
-        avatarUrl: avatars.get(id) || null,
-        location,
-        presenceType,
-        placeId: Number.isSafeInteger(placeId) && placeId > 0 ? placeId : null,
-        gameId,
-      }];
-    }).sort((a, b) => {
-      if (a.presenceType === 2 && b.presenceType !== 2) return -1;
-      if (a.presenceType !== 2 && b.presenceType === 2) return 1;
-      if (a.presenceType > b.presenceType) return -1;
-      if (a.presenceType < b.presenceType) return 1;
-      return a.displayName.localeCompare(b.displayName, undefined, { sensitivity: 'base' });
-    });
-
+    friends = snapshot.friends;
     identityNode.innerHTML = `
-      ${avatarHTML(meAvatar.get(Number(me.id)), me.displayName || me.name, 'identity-avatar')}
-      <div class="identity-copy"><strong>${escapeHTML(me.displayName || me.name)}</strong><span>@${escapeHTML(me.name)}</span></div>
-      <a href="https://www.roblox.com/users/${encodeURIComponent(me.id)}/profile" target="_blank" rel="noreferrer">Profile</a>`;
+      ${avatarHTML(snapshot.me.avatarUrl, snapshot.me.displayName || snapshot.me.username, 'identity-avatar')}
+      <div class="identity-copy"><strong>${escapeHTML(snapshot.me.displayName || snapshot.me.username)}</strong><span>@${escapeHTML(snapshot.me.username)}</span></div>
+      <a href="https://www.roblox.com/users/${encodeURIComponent(snapshot.me.id)}/profile" target="_blank" rel="noreferrer">Profile</a>`;
     attachAvatarFallbacks(identityNode);
 
     identityNode.hidden = false;
@@ -233,7 +422,7 @@ async function load() {
   } catch (error) {
     friends = [];
     statusNode.classList.add('error');
-    statusNode.innerHTML = `Could not load your Roblox friends. Sign in at <strong>roblox.com</strong>, then reopen the companion.<br /><br />${escapeHTML(error.message)}`;
+    statusNode.innerHTML = `Could not load your Roblox friends. Keep a signed-in <strong>roblox.com</strong> tab open, then press refresh.<br /><br />${escapeHTML(error.message)}`;
   } finally {
     refreshButton.classList.remove('loading');
     refreshButton.disabled = false;
