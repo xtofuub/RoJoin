@@ -11,17 +11,17 @@
   <header class="topbar">
     <div class="brand-mark" aria-hidden="true">R<span></span></div>
     <div class="brand-copy"><strong>RoJoiner</strong><small>Firefox companion</small></div>
-    <button id="refresh" class="icon-button" type="button" title="Refresh friends" aria-label="Refresh friends">↻</button>
+    <button id="refresh" class="icon-button" type="button" title="Refresh friends" aria-label="Refresh friends"><span class="refresh-glyph" aria-hidden="true">↻</span></button>
   </header>
 
   <main>
-    <div id="status" class="status">Loading your Roblox friends…</div>
+    <div id="status" class="status">Loading your online Roblox friends…</div>
 
     <section id="identity" class="identity" hidden></section>
 
     <section id="workspace" hidden>
       <div class="summary-row">
-        <div><span id="online-count">0</span><small>friends</small></div>
+        <div><span id="online-count">0</span><small>online</small></div>
         <div><span id="joinable-count">0</span><small>in game</small></div>
         <div class="session-state"><i></i><span>Session local</span></div>
       </div>
@@ -29,7 +29,7 @@
       <div class="controls">
         <div class="segments" role="tablist" aria-label="Friend filters">
           <button class="segment active" data-mode="joinable" type="button" role="tab" aria-selected="true">In game</button>
-          <button class="segment" data-mode="all" type="button" role="tab" aria-selected="false">All friends</button>
+          <button class="segment" data-mode="online" type="button" role="tab" aria-selected="false">Online</button>
         </div>
         <input id="filter" type="search" placeholder="Filter friends" autocomplete="off" />
       </div>
