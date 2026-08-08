@@ -20,7 +20,7 @@ if (friendsPanel) {
           <div class="companion-download-top">
             <div class="companion-logo" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M6 7h10.5c5.6 0 9 2.8 9 7.4 0 3.5-2 6-5.6 7l6.1 4.6h-6.8l-5.4-4.2H12V26H6V7Zm6 5v5h4.2c2.1 0 3.2-.9 3.2-2.5 0-1.7-1.1-2.5-3.2-2.5H12Z"/><circle cx="25" cy="7" r="3"/></svg></div>
             <div class="companion-title"><strong>RoJoiner Companion</strong><span>Firefox test build</span></div>
-            <span class="version-pill">v0.3.0</span>
+            <span class="version-pill">v0.3.1</span>
           </div>
 
           <div class="companion-capabilities">
