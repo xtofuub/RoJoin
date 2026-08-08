@@ -7,7 +7,7 @@ if (friendsPanel) {
         <div class="friends-copy">
           <span class="friends-kicker">FIREFOX COMPANION</span>
           <h3>Your in-game friends, ready to join.</h3>
-          <p>The companion loads your full Roblox friend list inside Firefox, checks presence using your signed-in session, and shows the friends Roblox currently reports as in-game.</p>
+          <p>The companion checks the online friends visible to your signed-in Firefox session, falls back to the full friend list only when necessary, and caches successful results to avoid hammering Roblox.</p>
           <div class="trust-row">
             <span><i></i>No cookies permission</span>
             <span><i></i>No analytics</span>
@@ -20,12 +20,12 @@ if (friendsPanel) {
           <div class="companion-download-top">
             <div class="companion-logo" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M6 7h10.5c5.6 0 9 2.8 9 7.4 0 3.5-2 6-5.6 7l6.1 4.6h-6.8l-5.4-4.2H12V26H6V7Zm6 5v5h4.2c2.1 0 3.2-.9 3.2-2.5 0-1.7-1.1-2.5-3.2-2.5H12Z"/><circle cx="25" cy="7" r="3"/></svg></div>
             <div class="companion-title"><strong>RoJoiner Companion</strong><span>Firefox test build</span></div>
-            <span class="version-pill">v0.3.1</span>
+            <span class="version-pill">v0.3.2</span>
           </div>
 
           <div class="companion-capabilities">
-            <div><b>01</b><span>Loads your full friend list instead of relying on Roblox's flaky online-friends response.</span></div>
-            <div><b>02</b><span>Checks presence in batches and lists every friend Roblox currently reports as in-game.</span></div>
+            <div><b>01</b><span>Starts with the lightweight online-friends view and only performs a full scan when Roblox returns an empty online list.</span></div>
+            <div><b>02</b><span>Paces requests, caches successful results for 90 seconds, and respects Roblox 429 retry windows.</span></div>
             <div><b>03</b><span>Uses exact place + server joins when available, otherwise asks Roblox to join the friend.</span></div>
           </div>
 
@@ -50,7 +50,7 @@ if (friendsPanel) {
         <article class="boundary-card">
           <div class="friends-card-head"><strong>Limits</strong><span>What it can see</span></div>
           <ul class="boundary-list">
-            <li><span>Your Roblox friends and presence visible to your signed-in session.</span></li>
+            <li><span>Your online Roblox friends and presence visible to your signed-in session.</span></li>
             <li><span>Exact <code>placeId + gameId</code> joins when Roblox exposes them.</span></li>
             <li><span>Roblox-native <code>userId</code> joins when the exact server is hidden.</span></li>
             <li class="limit"><span>No hidden users, private servers, cookie extraction, or privacy bypasses.</span></li>
