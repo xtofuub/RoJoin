@@ -51,13 +51,49 @@ button, input { font: inherit; }
 .brand-copy strong, .brand-copy small { display: block; }
 .brand-copy strong { font-size: 12px; }
 .brand-copy small { margin-top: 2px; color: var(--dim); font: 8px var(--mono); text-transform: uppercase; letter-spacing: .06em; }
-.icon-button { margin-left: auto; width: 32px; height: 32px; border: 1px solid var(--line); border-radius: 4px; color: var(--muted); background: transparent; cursor: pointer; }
+.icon-button {
+  margin-left: auto;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+}
 .icon-button:hover { color: #fff; border-color: var(--line-strong); }
-.icon-button.loading { animation: spin .8s linear infinite; }
+.icon-button:disabled { cursor: wait; }
+.refresh-glyph { display: block; line-height: 1; transform: translateY(-1px); }
+.icon-button.loading { color: var(--accent); border-color: #3a2925; }
+.icon-button.loading .refresh-glyph { animation: refreshPulse .72s ease-in-out infinite alternate; }
 
 main { padding: 14px; }
-.status { min-height: 104px; display: grid; place-items: center; padding: 18px; border: 1px solid var(--line); border-radius: 5px; color: var(--muted); background: var(--panel); font-size: 10px; line-height: 1.6; text-align: center; }
+.status {
+  min-height: 104px;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  color: var(--muted);
+  background: var(--panel);
+  font-size: 10px;
+  line-height: 1.6;
+  text-align: center;
+}
 .status.error { color: #f1a093; border-color: #5a2c25; }
+.status.notice {
+  min-height: 0;
+  display: block;
+  margin-bottom: 10px;
+  padding: 9px 11px;
+  text-align: left;
+  font-size: 9px;
+}
+.status.notice strong { color: #d8d8d4; font-weight: 600; }
 
 .identity {
   display: grid;
@@ -118,7 +154,10 @@ footer { min-height: 48px; display: flex; align-items: center; justify-content: 
 footer a { color: var(--muted); }
 footer a:hover { color: var(--accent); }
 
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes refreshPulse {
+  from { opacity: .35; transform: translateY(-1px) scale(.94); }
+  to { opacity: 1; transform: translateY(-1px) scale(1); }
+}
 
 @media (max-width: 440px) {
   body { width: 360px; }
